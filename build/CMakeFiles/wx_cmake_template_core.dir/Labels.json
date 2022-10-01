@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/CMakeFiles/wx_cmake_template_core"
+		},
+		{
+			"file" : "/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/CMakeFiles/wx_cmake_template_core.rule"
+		},
+		{
+			"file" : "/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/CMakeFiles/wx_cmake_template_core-complete.rule"
+		},
+		{
+			"file" : "/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-build.rule"
+		},
+		{
+			"file" : "/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-configure.rule"
+		},
+		{
+			"file" : "/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-download.rule"
+		},
+		{
+			"file" : "/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-install.rule"
+		},
+		{
+			"file" : "/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-mkdir.rule"
+		},
+		{
+			"file" : "/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-patch.rule"
+		},
+		{
+			"file" : "/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"wx_cmake_template_core"
+		],
+		"name" : "wx_cmake_template_core"
+	}
+}

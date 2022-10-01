@@ -1,0 +1,10 @@
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/CMakeFiles/wx_cmake_template_core.dir
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/CMakeFiles/edit_cache.dir
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/CMakeFiles/rebuild_cache.dir
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/thirdparty/CMakeFiles/edit_cache.dir
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/thirdparty/CMakeFiles/rebuild_cache.dir
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/thirdparty/wxwidgets/CMakeFiles/edit_cache.dir
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/thirdparty/wxwidgets/CMakeFiles/rebuild_cache.dir
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/src/CMakeFiles/MainFrame.dir
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/src/CMakeFiles/edit_cache.dir
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/src/CMakeFiles/rebuild_cache.dir

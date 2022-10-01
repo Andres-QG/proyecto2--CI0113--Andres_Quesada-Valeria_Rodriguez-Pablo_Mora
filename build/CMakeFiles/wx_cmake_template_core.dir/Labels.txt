@@ -1,0 +1,13 @@
+# Target labels
+ wx_cmake_template_core
+# Source files and their labels
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/CMakeFiles/wx_cmake_template_core
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/CMakeFiles/wx_cmake_template_core.rule
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/CMakeFiles/wx_cmake_template_core-complete.rule
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-build.rule
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-configure.rule
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-download.rule
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-install.rule
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-mkdir.rule
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-patch.rule
+/Users/valeriarodriguez/Desktop/Pruebas Proy2/build/subprojects/Stamp/wx_cmake_template_core/wx_cmake_template_core-update.rule
