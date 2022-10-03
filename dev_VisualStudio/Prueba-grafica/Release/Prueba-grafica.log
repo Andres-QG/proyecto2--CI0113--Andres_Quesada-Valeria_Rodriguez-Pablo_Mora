@@ -1,0 +1,9 @@
+﻿  App.cpp
+  MainFrame.cpp
+  Generando código
+  4 of 552 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    3 functions had inline decision re-evaluated but remain unchanged
+  Generación de código finalizada
+wxbase32u.lib(extended.obj) : warning LNK4099: no se encontró PDB 'wxbase32u.pdb' con 'wxbase32u.lib(extended.obj)' o en 'C:\Users\jpmcu\OneDrive\Desktop\c++\gui\Prueba-grafica\Release\wxbase32u.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
+  Prueba-grafica.vcxproj -> C:\Users\jpmcu\OneDrive\Desktop\c++\gui\Prueba-grafica\Release\Prueba-grafica.exe
