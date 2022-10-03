@@ -1,3 +1,6 @@
+#ifndef APP_HH
+#define APP_HH
+
 #include <wx/wxprec.h>
  
 #ifndef WX_PRECOMP
@@ -8,4 +11,6 @@ class App : public wxApp
 {
 public:
   bool OnInit();
-}
+};
+
+#endif
