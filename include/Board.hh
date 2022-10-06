@@ -2,6 +2,7 @@
 #define BOARD_HH
 
 #include "Cell.hh"
+#include "Movement.hh"
 #include <vector>
 
 class Board {
@@ -20,6 +21,8 @@ public:
   // Puntuacion individual (puede ser opcional dependiendo de quien la ocupe).
   int getScoreP1();
   int getScoreP2();
+  // jugadas disponibles.
+  vector<Movement> getAvblMoves();
 
   friend class Movement;
 };

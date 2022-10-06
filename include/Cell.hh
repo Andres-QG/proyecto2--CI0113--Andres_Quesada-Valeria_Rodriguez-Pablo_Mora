@@ -21,6 +21,7 @@ public:
   // true si logra hacer una caja y darle un dueno, false si ya tenia dueno o no
   // hay caja aun.
   bool boxChecker(short owner);
+  friend class Board;
   friend class Movement;
 };
 

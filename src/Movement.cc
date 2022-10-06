@@ -2,6 +2,12 @@
 
 Movement::Movement() : xPos(-1), yPos(-1), lineDirection(-1) {}
 
+Movement::Movement(int xPos, int yPos, int lineDirection) {
+  this->xPos = xPos;
+  this->yPos = yPos;
+  this->lineDirection = lineDirection;
+}
+
 Movement::~Movement() {}
 
 bool Movement::play(Board &actualBoard, int playerType) {

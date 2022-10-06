@@ -37,3 +37,30 @@ void Board::scoreUpdater() {
   player1Score = count1;
   player2Score = count2;
 }
+
+vector<Movement> Board::getAvblMoves() {
+  vector<Movement> moves;
+  Movement *temp;
+  // Verifica todos los lados de cada celda.
+  for (int i = 0; i < boxes.size(); i++) {
+    for (int j = 0; j < boxes.size(); j++) {
+      if (boxes[i][j].east == NO_OWNER) {
+        temp = new Movement(i, j, EAST);
+        moves.push_back(*temp);
+      }
+      if (boxes[i][j].west == NO_OWNER) {
+        temp = new Movement(i, j, WEST);
+        moves.push_back(*temp);
+      }
+      if (boxes[i][j].north == NO_OWNER) {
+        temp = new Movement(i, j, NORTH);
+        moves.push_back(*temp);
+      }
+      if (boxes[i][j].south == NO_OWNER) {
+        temp = new Movement(i, j, SOUTH);
+        moves.push_back(*temp);
+      }
+    }
+  }
+  return moves;
+}

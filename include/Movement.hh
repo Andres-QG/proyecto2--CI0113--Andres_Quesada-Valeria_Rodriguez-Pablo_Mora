@@ -13,6 +13,7 @@ private:
 
 public:
   Movement();
+  Movement(int xPos, int yPos, int lineDirection);
   ~Movement();
 
   bool play(Board &actualBoard, int playerType);
