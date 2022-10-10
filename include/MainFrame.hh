@@ -7,9 +7,6 @@ class MainFrame : public wxFrame
 {
 public:
   MainFrame(const wxString& title);
-
-private:
-  void OnPaint(wxPaintEvent& evt);
   
 };
 

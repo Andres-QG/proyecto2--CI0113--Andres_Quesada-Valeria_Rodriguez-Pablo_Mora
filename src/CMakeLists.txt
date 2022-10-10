@@ -14,7 +14,7 @@ set(wxWidgets_USE_STATIC 1)
 
 find_package(wxWidgets REQUIRED)
 
-set(SRCS MainFrame.cpp App.cpp)
+set(SRCS MainFrame.cpp App.cpp GameBoardPanel.cpp)
 
 include(${wxWidgets_USE_FILE})
 

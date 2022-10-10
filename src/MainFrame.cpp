@@ -1,5 +1,6 @@
 #include <MainFrame.hh>
 #include <iostream>
+#include <GameBoardPanel.hh>
 #include <wx/dcclient.h>
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -24,18 +25,5 @@ MainFrame :: MainFrame (const wxString& title): wxFrame(nullptr, wxID_ANY, title
     sizer->Add(panel, 1 , wxEXPAND | wxLEFT| wxTOP | wxRIGHT,10);
     sizer->Add(panel_game,2, wxEXPAND | wxALL,10);
     this->SetSizerAndFit(sizer);
-
-    Bind(wxEVT_PAINT, &MainFrame::OnPaint, this);
     
-}
-
-void MainFrame::OnPaint(wxPaintEvent& evt)
-{
-    wxPaintDC dc(this);
-
-    dc.SetPen(*wxBLACK_PEN);
-    dc.SetBrush(*wxBLACK_BRUSH);
-    for (int i = 0; i < 8; i++) {
-        dc.DrawCircle(330,35*i+1 ,5);
-    }
 }
