@@ -24,6 +24,8 @@ MainFrame :: MainFrame (const wxString& title): wxFrame(nullptr, wxID_ANY, title
     sizer->Add(panel, 1 , wxEXPAND | wxLEFT| wxTOP | wxRIGHT,10);
     sizer->Add(panel_game,2, wxEXPAND | wxALL,10);
     this->SetSizerAndFit(sizer);
+
+    Bind(wxEVT_PAINT, &MainFrame::OnPaint, this);
     
 }
 
@@ -37,7 +39,3 @@ void MainFrame::OnPaint(wxPaintEvent& evt)
         dc.DrawCircle(330,35*i+1 ,5);
     }
 }
-
-wxBEGIN_EVENT_TABLE(MainFrame,wxFrame)
-    EVT_PAINT(MainFrame::OnPaint)
-wxEND_EVENT_TABLE()
