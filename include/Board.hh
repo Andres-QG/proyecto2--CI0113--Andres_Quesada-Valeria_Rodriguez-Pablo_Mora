@@ -21,10 +21,12 @@ public:
   // Puntuacion individual (puede ser opcional dependiendo de quien la ocupe).
   int getScoreP1();
   int getScoreP2();
+  // Cantidad de filas(que es igual a la de cols).
+  int getBoardSize();
+  // xPos y yPos son indices en el tablero.
+  Cell *getCell(int xPos, int yPos);
   // jugadas disponibles.
-  vector<Movement> getAvblMoves();
-
-  friend class Movement;
+  vector<Movement> getAvailableMoves();
 };
 
 #endif

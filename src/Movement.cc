@@ -1,51 +1,53 @@
 #include "Movement.hh"
 
-Movement::Movement() : xPos(-1), yPos(-1), lineDirection(-1) {}
-
-Movement::Movement(int xPos, int yPos, int lineDirection) {
-  this->xPos = xPos;
-  this->yPos = yPos;
-  this->lineDirection = lineDirection;
-}
+Movement::Movement(int xPos, int yPos, enum Directions lineDirection)
+    : xPos(xPos), yPos(yPos), lineDirection(lineDirection) {}
 
 Movement::~Movement() {}
 
-bool Movement::play(Board &actualBoard, int playerType) {
+int Movement::getXPos() { return this->xPos; }
+
+int Movement::getYPos() { return this->yPos; }
+
+enum Directions Movement::getLineDirection() { return this->lineDirection; }
+
+// Metodo "Jugar":
+bool Movement::play(Board &currentBoard, enum OwnerType owner) {
   switch (lineDirection) {
   case WEST:
-    if (actualBoard.boxes[xPos][yPos].west != NO_OWNER) {
+    if (currentBoard.getCell(xPos, yPos)->west != NO_OWNER) {
       return false;
     }
-    actualBoard.boxes[xPos][yPos].west = playerType;
+    currentBoard.getCell(xPos, yPos)->west = owner;
     if (yPos > 0) {
-      actualBoard.boxes[xPos][yPos - 1].east = playerType;
+      currentBoard.getCell(xPos, yPos - 1)->east = owner;
     }
     break;
   case EAST:
-    if (actualBoard.boxes[xPos][yPos].east != NO_OWNER) {
+    if (currentBoard.getCell(xPos, yPos)->east != NO_OWNER) {
       return false;
     }
-    actualBoard.boxes[xPos][yPos].east = playerType;
-    if (yPos < actualBoard.boxes.size() - 1) {
-      actualBoard.boxes[xPos][yPos + 1].west = playerType;
+    currentBoard.getCell(xPos, yPos)->east = owner;
+    if (yPos < currentBoard.getBoardSize()) {
+      currentBoard.getCell(xPos, yPos + 1)->west = owner;
     }
     break;
   case NORTH:
-    if (actualBoard.boxes[xPos][yPos].north != NO_OWNER) {
+    if (currentBoard.getCell(xPos, yPos)->north != NO_OWNER) {
       return false;
     }
-    actualBoard.boxes[xPos][yPos].north = playerType;
+    currentBoard.getCell(xPos, yPos)->north = owner;
     if (xPos > 0) {
-      actualBoard.boxes[xPos - 1][yPos].south = playerType;
+      currentBoard.getCell(xPos - 1, yPos)->south = owner;
     }
     break;
   case SOUTH:
-    if (actualBoard.boxes[xPos][yPos].south != NO_OWNER) {
+    if (currentBoard.getCell(xPos, yPos)->south != NO_OWNER) {
       return false;
     }
-    actualBoard.boxes[xPos][yPos].south = playerType;
-    if (xPos < actualBoard.boxes.size() - 1) {
-      actualBoard.boxes[xPos + 1][yPos].north = playerType;
+    currentBoard.getCell(xPos, yPos)->south = owner;
+    if (xPos < currentBoard.getBoardSize()) {
+      currentBoard.getCell(xPos + 1, yPos)->north = owner;
     }
     break;
 

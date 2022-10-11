@@ -38,7 +38,11 @@ void Board::scoreUpdater() {
   player2Score = count2;
 }
 
-vector<Movement> Board::getAvblMoves() {
+int Board::getBoardSize() { return boxes.size(); }
+
+Cell *Board::getCell(int xPos, int yPos) { return &(boxes[xPos][yPos]); }
+
+vector<Movement> Board::getAvailableMoves() {
   vector<Movement> moves;
   Movement *temp;
   // Verifica todos los lados de cada celda.

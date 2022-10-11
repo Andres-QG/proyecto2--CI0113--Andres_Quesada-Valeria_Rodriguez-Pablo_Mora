@@ -9,14 +9,17 @@ enum Directions { WEST, EAST, NORTH, SOUTH };
 class Movement {
 private:
   // xPos y yPos son indices en la matriz
-  int xPos, yPos, lineDirection;
+  int xPos, yPos;
+  enum Directions lineDirection;
 
 public:
-  Movement();
-  Movement(int xPos, int yPos, int lineDirection);
+  Movement(int xPos, int yPos, enum Directions lineDirection);
   ~Movement();
+  int getXPos();
+  int getYPos();
+  enum Directions getLineDirection();
 
-  bool play(Board &actualBoard, int playerType);
+  bool play(Board &currentBoard, enum OwnerType owner);
 };
 
 #endif
