@@ -25,7 +25,7 @@ void GameBoardPanel::paintNow() {
 void GameBoardPanel::render(wxDC& dc) {
   dc.SetPen(*wxBLACK_PEN);
   dc.SetBrush(*wxBLACK_BRUSH);
-  for (int i = 0; i < 8; i++) {
-    dc.DrawCircle(330,35*i+1 ,5);
+  for (int i = 1; i < 9; i++) {
+    dc.DrawCircle(330,45*i+1 ,5);
   }
 }

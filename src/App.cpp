@@ -12,7 +12,6 @@ bool App::OnInit() {
   MainFrame* mainFrame = new MainFrame ("Dots & Boxes");
   mainFrame->SetClientSize(800,600);
   mainFrame->Center();
-
   drawPane = new GameBoardPanel((wxFrame*)mainFrame);
 
   mainFrame->Show();
