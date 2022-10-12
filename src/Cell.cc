@@ -6,6 +6,8 @@ Cell::Cell()
 
 Cell::~Cell() {}
 
+enum OwnerType Cell::getBoxOwner() { return boxOwner; }
+
 bool Cell::boxChecker(enum OwnerType owner) {
   if (east != NO_OWNER && north != NO_OWNER && south != NO_OWNER &&
       west != NO_OWNER && boxOwner == NO_OWNER) {

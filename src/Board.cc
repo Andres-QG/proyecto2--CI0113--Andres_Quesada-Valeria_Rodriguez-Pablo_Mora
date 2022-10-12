@@ -1,12 +1,12 @@
 #include "Board.hh"
 
-Board::Board(int size) : player1Score(0), player2Score(0) {
-  // size-1 pues, por una matriz de n*n puntos, hay (n-1)*(n-1) cajas.
+Board::Board(int rowSize, int colSize) : player1Score(0), player2Score(0) {
+  // size-1 pues, por una matriz de n*m puntos, hay (n-1)*(m-1) cajas.
   // Filas
-  boxes.resize(size - 1);
+  boxes.resize(rowSize - 1);
   // Columnas
-  for (int i = size - 1; i < size - 1; i++) {
-    boxes[i].resize(size - 1);
+  for (int i = 0; i < rowSize - 1; i++) {
+    boxes[i].resize(colSize - 1);
   }
 }
 
@@ -17,9 +17,9 @@ Board::~Board() {
   boxes.clear();
 }
 
-int Board::getScoreP1() { return this->player1Score; }
+int Board::getScoreP1() { return player1Score; }
 
-int Board::getScoreP2() { return this->player2Score; }
+int Board::getScoreP2() { return player2Score; }
 
 void Board::scoreUpdater() {
   int count1 = 0, count2 = 0;
@@ -38,7 +38,9 @@ void Board::scoreUpdater() {
   player2Score = count2;
 }
 
-int Board::getBoardSize() { return boxes.size(); }
+int Board::getBoardRowSize() { return boxes.size(); }
+
+int Board::getBoardColSize() { return boxes[0].size(); }
 
 Cell *Board::getCell(int xPos, int yPos) { return &(boxes[xPos][yPos]); }
 
@@ -47,7 +49,7 @@ vector<Movement> Board::getAvailableMoves() {
   Movement *temp;
   // Verifica todos los lados de cada celda.
   for (int i = 0; i < boxes.size(); i++) {
-    for (int j = 0; j < boxes.size(); j++) {
+    for (int j = 0; j < boxes[i].size(); j++) {
       if (boxes[i][j].east == NO_OWNER) {
         temp = new Movement(i, j, EAST);
         moves.push_back(*temp);

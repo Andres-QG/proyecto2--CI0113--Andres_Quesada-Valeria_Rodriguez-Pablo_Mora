@@ -5,11 +5,11 @@ Movement::Movement(int xPos, int yPos, enum Directions lineDirection)
 
 Movement::~Movement() {}
 
-int Movement::getXPos() { return this->xPos; }
+int Movement::getXPos() { return xPos; }
 
-int Movement::getYPos() { return this->yPos; }
+int Movement::getYPos() { return yPos; }
 
-enum Directions Movement::getLineDirection() { return this->lineDirection; }
+enum Directions Movement::getLineDirection() { return lineDirection; }
 
 // Metodo "Jugar":
 bool Movement::play(Board &currentBoard, enum OwnerType owner) {
@@ -28,7 +28,7 @@ bool Movement::play(Board &currentBoard, enum OwnerType owner) {
       return false;
     }
     currentBoard.getCell(xPos, yPos)->east = owner;
-    if (yPos < currentBoard.getBoardSize()) {
+    if (yPos < currentBoard.getBoardColSize()) {
       currentBoard.getCell(xPos, yPos + 1)->west = owner;
     }
     break;
@@ -46,7 +46,7 @@ bool Movement::play(Board &currentBoard, enum OwnerType owner) {
       return false;
     }
     currentBoard.getCell(xPos, yPos)->south = owner;
-    if (xPos < currentBoard.getBoardSize()) {
+    if (xPos < currentBoard.getBoardRowSize()) {
       currentBoard.getCell(xPos + 1, yPos)->north = owner;
     }
     break;

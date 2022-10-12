@@ -17,7 +17,7 @@ public:
   Cell();
   ~Cell();
 
-  enum OwnerType getBoxOwner(); //*Podría quitarse.
+  enum OwnerType getBoxOwner();
   // true si logra hacer una caja y darle un dueno, false si ya tenia dueno o no
   // hay caja aun.
   bool boxChecker(enum OwnerType owner);

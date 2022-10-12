@@ -71,7 +71,7 @@ Movement *PlayerMid::findBestMove(Board &board,
       }
       break;
     case EAST:
-      if (y < board.getBoardSize() &&
+      if (y < board.getBoardColSize() &&
           board.getCell(x, y + 1)->availableMovesCount() > 2) {
         return &(possibleMoves[i]);
       }
@@ -82,7 +82,7 @@ Movement *PlayerMid::findBestMove(Board &board,
       }
       break;
     case SOUTH:
-      if (x < board.getBoardSize() &&
+      if (x < board.getBoardRowSize() &&
           board.getCell(x + 1, y)->availableMovesCount() > 2) {
         return &(possibleMoves[i]);
       }
