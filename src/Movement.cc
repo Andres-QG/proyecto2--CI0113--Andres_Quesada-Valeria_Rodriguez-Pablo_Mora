@@ -12,7 +12,10 @@ int Movement::getYPos() { return yPos; }
 enum Directions Movement::getLineDirection() { return lineDirection; }
 
 // Metodo "Jugar":
-bool Movement::play(Board &currentBoard, enum OwnerType owner) {
+bool Movement::play(class Board &currentBoard, enum OwnerType owner) {
+  if(!currentBoard.getCell(xPos, yPos)){
+    return false;
+  }
   switch (lineDirection) {
   case WEST:
     if (currentBoard.getCell(xPos, yPos)->west != NO_OWNER) {

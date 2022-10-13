@@ -42,9 +42,15 @@ int Board::getBoardRowSize() { return boxes.size(); }
 
 int Board::getBoardColSize() { return boxes[0].size(); }
 
-Cell *Board::getCell(int xPos, int yPos) { return &(boxes[xPos][yPos]); }
+Cell *Board::getCell(int xPos, int yPos) {
+  //Revisa validez de los indices.
+  if (xPos >= 0 && xPos < boxes.size() && yPos >= 0 && yPos < boxes[0].size()) {
+    return &(boxes[xPos][yPos]);
+  }
+  return nullptr;
+}
 
-vector<Movement> Board::getAvailableMoves() {
+vector<class Movement> Board::getAvailableMoves() {
   vector<Movement> moves;
   Movement *temp;
   // Verifica todos los lados de cada celda.

@@ -19,7 +19,7 @@ public:
   int getYPos();
   enum Directions getLineDirection();
 
-  bool play(Board &currentBoard, enum OwnerType owner);
+  bool play(class Board &currentBoard, enum OwnerType owner);
 };
 
 #endif
