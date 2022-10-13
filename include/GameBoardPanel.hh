@@ -7,9 +7,7 @@ class GameBoardPanel : public wxPanel
 {
   public:
     GameBoardPanel(wxFrame* parent);
-
     void paintEvent(wxPaintEvent & evt);
     void paintNow();
-
     void render(wxDC& dc);
 };
