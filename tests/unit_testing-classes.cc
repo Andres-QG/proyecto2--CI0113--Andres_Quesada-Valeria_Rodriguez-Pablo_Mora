@@ -35,15 +35,14 @@ TEST(BoardTest, BoxesSizeTest) {
   Board b1(13, 6);
   EXPECT_EQ(b1.getBoardRowSize(), 12);
   EXPECT_EQ(b1.getBoardColSize(), 5);
-
-  EXPECT_EQ(b1.getAvailableMoves().size(), 12 * 5 * 4);
+  EXPECT_EQ(b1.getAvailableMoves().size(), 137);
   for (int i = 0; i < b1.getBoardRowSize(); i++) {
     for (int j = 0; j < b1.getBoardColSize(); j++) {
       *(b1.getCell(i, j)->getLine(0)) = PLAYER1;
       *(b1.getCell(i, j)->getLine(2)) = PLAYER1;
     }
   }
-  EXPECT_EQ(b1.getAvailableMoves().size(), 12 * 5 * 2);
+  EXPECT_EQ(b1.getAvailableMoves().size(), 120);
 }
 
 TEST(BoardTest, ScoreTest) {
@@ -99,17 +98,30 @@ TEST(BoardTest, CopyTest) {
   EXPECT_EQ(b1copy.getScoreP1(), 0);
 }
 
-bool duplicadeMovesTestMethod(vector<Movement>& moves){
-	for (int i = 0; i < moves.size(); i++) {
-		for (int j = 0; j < moves.size(); j++) {
-			if (i != j && moves[i].getXPos() == moves[j].getXPos() &&
-				moves[i].getYPos() == moves[j].getYPos() &&
-				moves[i].getLineDirection() == moves[j].getLineDirection()) {
-				return true;
-			}
-		}
-	}
-	return false;
+bool duplicadeMovesTestMethod(vector<Movement> &moves) {
+  for (int i = 0; i < moves.size(); i++) {
+    for (int j = 0; j < moves.size(); j++) {
+      // No esta el mismo move.
+      if (i != j && moves[i].getXPos() == moves[j].getXPos() &&
+          moves[i].getYPos() == moves[j].getYPos() &&
+          moves[i].getLineDirection() == moves[j].getLineDirection()) {
+        return true;
+      }
+      // Solo hay una forma de hacer el move.
+      if (i != j && moves[i].getXPos() == moves[j].getXPos() &&
+          moves[j].getYPos() == moves[i].getYPos() - 1 &&
+          moves[j].getLineDirection() == EAST &&
+          moves[i].getLineDirection() == WEST) {
+        return true;
+      } else if (i != j && moves[i].getYPos() == moves[j].getYPos() &&
+                 moves[j].getXPos() == moves[i].getXPos() - 1 &&
+                 moves[j].getLineDirection() == SOUTH &&
+                 moves[i].getLineDirection() == NORTH) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 TEST(BoardTest, AvailableMovesTest) {
@@ -117,35 +129,35 @@ TEST(BoardTest, AvailableMovesTest) {
   vector<Movement> moves = b1.getAvailableMoves();
   EXPECT_FALSE(duplicadeMovesTestMethod(moves));
 
-	Board b2(15,15);
-	for(int i = 0; i<3; i++){
-		*(b2.getCell(i,i)->getLine(0)) = PLAYER2;
-		*(b2.getCell(i,i)->getLine(1)) = PLAYER2;
-		*(b2.getCell(i,i)->getLine(2)) = PLAYER2;
-		*(b2.getCell(i,i)->getLine(3)) = PLAYER2;
-		b2.getCell(i,i)->boxChecker(PLAYER2);
-	}
-	b2.scoreUpdater();
-	EXPECT_EQ(b2.getScoreP2(), 3);
-	moves = b2.getAvailableMoves();
-	EXPECT_EQ(moves.size(), (14*14*4)-(3*4));
-	EXPECT_FALSE(duplicadeMovesTestMethod(moves));
+  Board b2(15, 15);
+  for (int i = 0; i < 3; i++) {
+    *(b2.getCell(i, i)->getLine(0)) = PLAYER2;
+    *(b2.getCell(i, i)->getLine(1)) = PLAYER2;
+    *(b2.getCell(i, i)->getLine(2)) = PLAYER2;
+    *(b2.getCell(i, i)->getLine(3)) = PLAYER2;
+    b2.getCell(i, i)->boxChecker(PLAYER2);
+  }
+  b2.scoreUpdater();
+  EXPECT_EQ(b2.getScoreP2(), 3);
+  moves = b2.getAvailableMoves();
+  EXPECT_EQ(moves.size(), 412);
+  EXPECT_FALSE(duplicadeMovesTestMethod(moves));
 }
 
-TEST(MovementTest, OnBoardPlayTest){
-  Board b1(5,5);
-  Movement m1(45,78, EAST);
-  Movement m2(0,1,NORTH);
-  Movement m3(1,1,NORTH);
-  Movement m4(0,2,WEST);
-  Movement m5(0,1,EAST);
+TEST(MovementTest, OnBoardPlayTest) {
+  Board b1(5, 5);
+  Movement m1(45, 78, EAST);
+  Movement m2(0, 1, NORTH);
+  Movement m3(1, 1, NORTH);
+  Movement m4(0, 2, WEST);
+  Movement m5(0, 1, EAST);
   EXPECT_FALSE(m1.play(b1, PLAYER1));
   EXPECT_TRUE(m2.play(b1, PLAYER1));
   EXPECT_TRUE(m3.play(b1, PLAYER1));
   EXPECT_TRUE(m4.play(b1, PLAYER1));
   EXPECT_FALSE(m5.play(b1, PLAYER1));
-  EXPECT_EQ(*(b1.getCell(0,2)->getLine(0)), PLAYER1);
-  EXPECT_EQ(*(b1.getCell(0,1)->getLine(1)), PLAYER1);
+  EXPECT_EQ(*(b1.getCell(0, 2)->getLine(0)), PLAYER1);
+  EXPECT_EQ(*(b1.getCell(0, 1)->getLine(1)), PLAYER1);
 }
 
-//TODO(Andres): Pruebas Unitarias a Player::Random, PlayerMid y PlayerEasy.
+// TODO(Andres): Pruebas Unitarias a Player::Random, PlayerMid y PlayerEasy.

@@ -13,7 +13,7 @@ enum Directions Movement::getLineDirection() { return lineDirection; }
 
 // Metodo "Jugar":
 bool Movement::play(class Board &currentBoard, enum OwnerType owner) {
-  if(!currentBoard.getCell(xPos, yPos)){
+  if (!currentBoard.getCell(xPos, yPos)) {
     return false;
   }
   switch (lineDirection) {
@@ -31,7 +31,7 @@ bool Movement::play(class Board &currentBoard, enum OwnerType owner) {
       return false;
     }
     currentBoard.getCell(xPos, yPos)->east = owner;
-    if (yPos < currentBoard.getBoardColSize()) {
+    if (yPos < currentBoard.getBoardColSize() - 1) {
       currentBoard.getCell(xPos, yPos + 1)->west = owner;
     }
     break;
@@ -49,7 +49,7 @@ bool Movement::play(class Board &currentBoard, enum OwnerType owner) {
       return false;
     }
     currentBoard.getCell(xPos, yPos)->south = owner;
-    if (xPos < currentBoard.getBoardRowSize()) {
+    if (xPos < currentBoard.getBoardRowSize() - 1) {
       currentBoard.getCell(xPos + 1, yPos)->north = owner;
     }
     break;
