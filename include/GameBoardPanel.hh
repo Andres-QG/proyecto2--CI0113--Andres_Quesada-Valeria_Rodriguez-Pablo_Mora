@@ -10,4 +10,7 @@ class GameBoardPanel : public wxPanel
     void paintEvent(wxPaintEvent & evt);
     void paintNow();
     void render(wxDC& dc);
+  private:
+    void OnMouseEvent(wxMouseEvent& evt);
+    bool ZoneClicked(wxEvent& evt);
 };
