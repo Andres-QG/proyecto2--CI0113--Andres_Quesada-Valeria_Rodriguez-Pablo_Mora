@@ -14,23 +14,15 @@ class MiniMax{
         int myDepth; 
         Movement bestMove; 
         vector <Movement> availableMoves; 
-        void setBestMove(Movement move);
-        
+        void setBestMove(Movement move);        
         Board myBoard; 
-
 
     public:
         MiniMax(Board board, bool isMaxPlayer, int depth); 
         short performMiniMax(bool root); 
         Movement getBestMove();
 
-
         ~MiniMax(); 
-
-
-
-
-
 }; 
 
 #endif
