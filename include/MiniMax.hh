@@ -19,6 +19,8 @@ class MiniMax{
         MiniMax(Board board, bool isMaxPlayer, int depth); 
         short performMiniMax(bool root); 
         short performProbabilityMiniMax(bool root);
+        //Primera llamada debe ser minimax.performAlfaBeta(true, -15000, 15000);
+        short performAlfaBeta(bool root, short alfa, short beta);
         Movement getBestMove();
 
         ~MiniMax(); 

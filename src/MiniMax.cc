@@ -192,6 +192,97 @@ short MiniMax::performProbabilityMiniMax(bool root) {
     }
 }
 
+short MiniMax::performAlfaBeta(bool root, short alfa, short beta) {
+    short remainingMoves = availableMoves.size();
+    short deltaScore = myBoard.getScoreP1() - myBoard.getScoreP2();
+
+    if (remainingMoves == 0) {
+        if (deltaScore > 0) {
+            return 1000;
+        }
+        if (deltaScore < 0) {
+            return -1000;
+        }
+        return 0;
+    }
+
+    if (myDepth == 0) {
+        return deltaScore;
+    }
+
+    short score;
+    // Si el jugador es max
+    if (maxPlayer) {
+        score = -10000;
+        for (int i = 0; i < remainingMoves; i++)
+        {
+            Board currentBoard = myBoard;
+            Movement* currentMove = &availableMoves[i];
+            short childScore;
+
+            if (currentMove->playAndAssignOwner(currentBoard, PLAYER1) == PLAYER1) {
+                //El siguiente turno corresponde al jugador max. 
+                childScore = MiniMax(currentBoard, true, myDepth - 1).performAlfaBeta(false, alfa, beta);
+            }
+            else {
+                //El siguiente turno corresponde al jugador min. 
+                childScore = MiniMax(currentBoard, false, myDepth - 1).performAlfaBeta(false, alfa, beta);
+            }
+
+            if (childScore > score) {
+                score = childScore;
+                // Unicamente guardamos el movimiento cuando estamos en el primer nivel del árbol. 
+                if (root) { setBestMove(*currentMove); }
+            }
+            // Si score es mayor que alfa, actualizamos el valor. 
+            if (score > alfa) {
+                alfa = score;
+            }
+            
+            if (score >= beta) {
+                break; 
+            }
+
+        }
+        return score;
+    }
+    // Si el jugador es Min. 
+    else {
+        score = 10000;
+        for (int i = 0; i < remainingMoves; i++)
+        {
+            Board currentBoard = myBoard;
+            Movement* currentMove = &availableMoves[i];
+            short childScore;
+
+            if (currentMove->playAndAssignOwner(currentBoard, PLAYER2) == PLAYER2) {
+                //El siguiente turno corresponde al jugador min. 
+                childScore = MiniMax(currentBoard, false, myDepth - 1).performAlfaBeta(false, alfa, beta);
+            }
+            else {
+                //El siguiente turno corresponde al jugador max. 
+                childScore = MiniMax(currentBoard, true, myDepth - 1).performAlfaBeta(false, alfa, beta);
+            }
+
+            if (childScore < score) {
+                score = childScore;
+                // Unicamente guardamos el movimiento cuando estamos en el primer nivel del árbol. 
+                if (root) { setBestMove(*currentMove); }
+            }
+            // Si score es menor que beta, actualizamos el valor. 
+            if (score < beta) {
+                beta = score;
+            }
+
+            if (score <= alfa) {
+                break;
+            }
+
+        }
+        return score;
+    }
+}
+
 void MiniMax::setBestMove(Movement move){
     bestMove = move; 
 } 
