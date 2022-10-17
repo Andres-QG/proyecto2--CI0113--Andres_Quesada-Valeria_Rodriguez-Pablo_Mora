@@ -3,7 +3,7 @@
 
 #include "Board.hh"
 
-enum Directions { WEST, EAST, NORTH, SOUTH };
+enum Directions { WEST, EAST, NORTH, SOUTH, EMPTY };
 
 // Clase "Jugada".
 class Movement {
