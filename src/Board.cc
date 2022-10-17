@@ -63,11 +63,11 @@ vector<class Movement> Board::getAvailableMoves() {
         temp = new Movement(i, j, EAST);
         moves.push_back(*temp);
       }
-      if (j = 0 && boxes[i][j].west == NO_OWNER) {
+      if (j == 0 && boxes[i][j].west == NO_OWNER) {
         temp = new Movement(i, j, WEST);
         moves.push_back(*temp);
       }
-      if (i = 0 && boxes[i][j].north == NO_OWNER) {
+      if (i == 0 && boxes[i][j].north == NO_OWNER) {
         temp = new Movement(i, j, NORTH);
         moves.push_back(*temp);
       }
