@@ -59,3 +59,60 @@ bool Movement::play(class Board &currentBoard, enum OwnerType owner) {
   }
   return true;
 }
+
+/*
+Función creada a la medida de MiniMax. Se encarga de realizar la jugada y en caso de que se complete
+la celda devuelve el dueño de la esta. */
+OwnerType Movement::playAndAssignOwner(Board& currentBoard, enum OwnerType owner) {
+    Cell* currentCell = currentBoard.getCell(xPos, yPos); 
+    switch (lineDirection) {
+    case WEST:
+        if (currentCell->west != NO_OWNER) {
+            return NO_VALID; //TODO
+        }
+        currentCell->west = owner;
+        currentCell->boxChecker(owner);
+        if (yPos > 0) {
+            currentBoard.getCell(xPos, yPos - 1)->east = owner; 
+            currentBoard.getCell(xPos, yPos - 1)->boxChecker(owner);
+        }
+        break;
+    case EAST:
+        if (currentCell->east != NO_OWNER) {
+            return NO_VALID;
+        }
+        currentCell->east = owner;
+        if (yPos + 1 < currentBoard.getBoardColSize()) {
+            currentBoard.getCell(xPos, yPos + 1)->west = owner;
+            currentBoard.getCell(xPos, yPos + 1)->boxChecker(owner);
+        }
+        break;
+    case NORTH:
+        if (currentBoard.getCell(xPos, yPos)->north != NO_OWNER) {
+            return NO_VALID;
+        }
+        currentBoard.getCell(xPos, yPos)->north = owner;
+        currentCell->boxChecker(owner);
+        if (xPos > 0) { 
+            currentBoard.getCell(xPos - 1, yPos)->south = owner;
+            currentBoard.getCell(xPos - 1, yPos);
+        }
+        break;
+    case SOUTH:
+        if (currentBoard.getCell(xPos, yPos)->south != NO_OWNER) {
+            return NO_VALID;
+        }
+        currentBoard.getCell(xPos, yPos)->south = owner;
+        currentCell->boxChecker(owner);
+
+        if (xPos < currentBoard.getBoardRowSize() - 1) { 
+            currentBoard.getCell(xPos + 1, yPos)->north = owner;
+            currentBoard.getCell(xPos + 1, yPos)->boxChecker(owner);
+        }
+        break;
+
+    default:
+        return NO_OWNER;
+    }
+    return currentCell->getBoxOwner();
+}
