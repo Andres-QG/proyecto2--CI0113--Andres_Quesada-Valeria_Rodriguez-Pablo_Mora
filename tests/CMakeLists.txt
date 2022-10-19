@@ -18,6 +18,7 @@ add_executable(
     ${DotsAndBoxes_SOURCE_DIR}/src/Board.cc
     ${DotsAndBoxes_SOURCE_DIR}/src/Movement.cc
     ${DotsAndBoxes_SOURCE_DIR}/src/Player.cc
+    ${DotsAndBoxes_SOURCE_DIR}/src/MiniMax.cc
 )
 
 target_include_directories(unit_testing-classes PUBLIC "${DotsAndBoxes_SOURCE_DIR}/include")

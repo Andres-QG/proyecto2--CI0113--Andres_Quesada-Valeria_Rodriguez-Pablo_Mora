@@ -20,6 +20,7 @@ public:
   enum Directions getLineDirection();
 
   bool play(class Board &currentBoard, enum OwnerType owner);
+  OwnerType playAndAssignOwner(Board& currentBoard, enum OwnerType owner);
 };
 
 #endif

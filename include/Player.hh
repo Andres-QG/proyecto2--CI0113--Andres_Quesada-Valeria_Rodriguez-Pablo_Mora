@@ -1,7 +1,7 @@
 #ifndef PLAYER_HH
 #define PLAYER_HH
 
-#include "Movement.hh"
+#include "MiniMax.hh"
 
 // Clase "Jugador"
 class Player {

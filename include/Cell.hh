@@ -6,7 +6,7 @@
 
 using namespace std;
 
-enum OwnerType { NO_OWNER, PLAYER1, PLAYER2 };
+enum OwnerType { NO_OWNER, PLAYER1, PLAYER2, NO_VALID };
 
 class Cell {
 private:
