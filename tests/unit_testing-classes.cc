@@ -160,8 +160,33 @@ TEST(MovementTest, OnBoardPlayTest) {
   EXPECT_EQ(*(b1.getCell(0, 1)->getLine(1)), PLAYER1);
 }
 
+TEST(MovementTest, playAndAssignOwner) {
+	Board board = { 3,3 };
+	Movement moveN = { 1,0, NORTH };
+	EXPECT_EQ(moveN.playAndAssignOwner(board, PLAYER1), NO_OWNER);
+	Movement moveW = { 1,0, WEST };
+	EXPECT_EQ(moveW.playAndAssignOwner(board, PLAYER2), NO_OWNER);
+	Movement moveS = { 1,0, SOUTH };
+	EXPECT_EQ(moveS.playAndAssignOwner(board, PLAYER1), NO_OWNER);
+	Movement moveN2 = { 1,1, NORTH };
+	moveN2.playAndAssignOwner(board, PLAYER2);
+	Movement moveS2 = { 1,1, SOUTH };
+	moveS2.playAndAssignOwner(board, PLAYER1);
+	Movement moveE = { 1,1, EAST };
+	EXPECT_EQ(moveE.playAndAssignOwner(board, PLAYER2), NO_OWNER);
+	Movement moveE2 = { 1, 0, EAST };
+
+
+	EXPECT_EQ(moveE2.playAndAssignOwner(board, PLAYER2), PLAYER2);
+	EXPECT_EQ(moveE2.playAndAssignOwner(board, PLAYER2), NO_VALID);
+	EXPECT_EQ(board.getCell(1, 0)->getBoxOwner(), PLAYER2);
+	EXPECT_EQ(board.getCell(1, 1)->getBoxOwner(), PLAYER2);
+
+
+}
+
+
 // Para miniMax voy a usar una matriz de 2x2 celdas. 
-// TODO: cuando se tenga un m�todo que no devuelva jugadas repetidas, es posible que haya que reconstruir las pruebas. 
 TEST(MiniMaxTest, FirstTwoMovements ) {
 	//Matriz 2x2 celdas 
 	Board board = { 3,3 };
@@ -186,18 +211,17 @@ TEST(MiniMaxTest, FirstTwoMovements ) {
 TEST(MiniMaxTest, NotCompleteThirdLine) {
 	Board board = { 3,3 };
 	Movement moveN = { 0,0, NORTH }; 
-	moveN.play(board, PLAYER1);
+	moveN.playAndAssignOwner(board, PLAYER1);
 	Movement moveS = { 0,0, SOUTH };
-	moveS.play(board, PLAYER2);
+	moveS.playAndAssignOwner(board, PLAYER2);
 
-	MiniMax miniMax = { board, false, 4 };
+	MiniMax miniMax = { board, false, 5 };
 	miniMax.performMiniMax(true);
 	Movement bestMove = miniMax.getBestMove(); 
 
 	EXPECT_FALSE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 && bestMove.getLineDirection() == WEST);
 	EXPECT_FALSE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 && bestMove.getLineDirection() == EAST);
 	EXPECT_FALSE(bestMove.getXPos() == 0 && bestMove.getYPos() == 1 && bestMove.getLineDirection() == WEST);
-	EXPECT_TRUE(bestMove.getXPos() == 0 && bestMove.getYPos() == 1 && bestMove.getLineDirection() == EAST); //TODO: puede cambiar con nuevo m�todo getMovements(). 
 }
 
 // Que complete una celda 
@@ -219,25 +243,99 @@ TEST(MiniMaxTest, CompleteCell) {
 
 TEST(MiniMaxTest, CompleteTwoCell) {
 	Board board = { 3,3 };
-	Movement moveN = { 0,1, NORTH };
+	Movement moveN = { 1,0, NORTH };
 	moveN.play(board, PLAYER1);
-	Movement moveS = { 0,1, SOUTH };
-	moveS.play(board, PLAYER2);
-	Movement moveO = { 0,1, WEST };
-	moveO.play(board, PLAYER1);
+	Movement moveW = { 1,0, WEST };
+	moveW.play(board, PLAYER2);
+	Movement moveS = { 1,0, SOUTH };
+	moveS.play(board, PLAYER1);
 	Movement moveN2 = { 1,1, NORTH };
 	moveN2.play(board, PLAYER2);
 	Movement moveS2 = { 1,1, SOUTH };
 	moveS2.play(board, PLAYER1);
-	Movement moveE = { 1,1, EAST };
-	moveE.play(board, PLAYER2);
+	Movement moveE2 = { 1,1, EAST };
+	moveE2.play(board, PLAYER2);
 
 	MiniMax miniMax = { board, true, 4 };
 	miniMax.performMiniMax(true);
 	Movement bestMove = miniMax.getBestMove();
 
-	EXPECT_TRUE(bestMove.getXPos() == 1 && bestMove.getYPos() == 1 && bestMove.getLineDirection() == WEST); //TODO: puede cambiar con nuevo m�todo getMovements(). 
+	EXPECT_TRUE(bestMove.getXPos() == 1 && bestMove.getYPos() == 0 && bestMove.getLineDirection() == EAST); 
 }
 
-// TODO(Andres): Pruebas Unitarias a Player::Random, PlayerMid y PlayerEasy.
+// Alpha-beta prunning
+TEST(AlfaBetaPruning, FirstTwoMovements) {
+	//Matriz 2x2 celdas 
+	Board board = { 3,3 };
+	MiniMax miniMax = { board, true, 4 };
+	miniMax.performAlfaBeta(true, -15000, 15000);
+	Movement bestMove = miniMax.getBestMove();
+	bestMove.play(board, PLAYER1);
 
+	// Primer movimiento 
+	EXPECT_TRUE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 && bestMove.getLineDirection() == EAST); 
+
+
+	MiniMax secondMiniMax = { board, false, 4 };
+	secondMiniMax.performAlfaBeta(true, -15000, 15000);
+	bestMove = secondMiniMax.getBestMove();
+
+	// Segundo Movimiento
+	EXPECT_TRUE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 && bestMove.getLineDirection() == WEST);
+}
+
+// B�sicamente que no regale una caja al completar una tercera l�nea. 
+TEST(AlfaBetaPruning, NotCompleteThirdLine) {
+	Board board = { 3,3 };
+	Movement moveN = { 0,0, NORTH };
+	moveN.playAndAssignOwner(board, PLAYER1);
+	Movement moveS = { 0,0, SOUTH };
+	moveS.playAndAssignOwner(board, PLAYER2);
+
+	MiniMax miniMax = { board, false, 5 };
+	miniMax.performAlfaBeta(true, -15000, 15000);
+	Movement bestMove = miniMax.getBestMove();
+
+	EXPECT_FALSE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 && bestMove.getLineDirection() == WEST);
+	EXPECT_FALSE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 && bestMove.getLineDirection() == EAST);
+	EXPECT_FALSE(bestMove.getXPos() == 0 && bestMove.getYPos() == 1 && bestMove.getLineDirection() == WEST);
+}
+
+// Que complete una celda 
+TEST(AlfaBetaPruning, CompleteCell) {
+	Board board = { 3,3 };
+	Movement moveN = { 0,0, NORTH };
+	moveN.play(board, PLAYER1);
+	Movement moveS = { 0,0, SOUTH };
+	moveS.play(board, PLAYER2);
+	Movement moveE = { 0,0, EAST };
+	moveE.play(board, PLAYER1);
+
+	MiniMax miniMax = { board, false, 4 };
+	miniMax.performAlfaBeta(true, -15000, 15000);
+	Movement bestMove = miniMax.getBestMove();
+
+	EXPECT_TRUE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 && bestMove.getLineDirection() == WEST);
+}
+
+TEST(AlfaBetaPruning, CompleteTwoCell) {
+	Board board = { 3,3 };
+	Movement moveN = { 1,0, NORTH };
+	moveN.play(board, PLAYER1);
+	Movement moveW = { 1,0, WEST };
+	moveW.play(board, PLAYER2);
+	Movement moveS = { 1,0, SOUTH };
+	moveS.play(board, PLAYER1);
+	Movement moveN2 = { 1,1, NORTH };
+	moveN2.play(board, PLAYER2);
+	Movement moveS2 = { 1,1, SOUTH };
+	moveS2.play(board, PLAYER1);
+	Movement moveE2 = { 1,1, EAST };
+	moveE2.play(board, PLAYER2);
+
+	MiniMax miniMax = { board, true, 4 };
+	miniMax.performAlfaBeta(true, -15000, 15000);
+	Movement bestMove = miniMax.getBestMove();
+
+	EXPECT_TRUE(bestMove.getXPos() == 1 && bestMove.getYPos() == 0 && bestMove.getLineDirection() == EAST);
+}

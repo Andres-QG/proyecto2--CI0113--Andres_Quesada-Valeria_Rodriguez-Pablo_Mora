@@ -14,8 +14,10 @@ short MiniMax::performMiniMax(bool root) {
     // Considerar al jugador 1 como max. 
         short remainingMoves = availableMoves.size(); 
 
+
     // Calculamos la diferencia de puntajes para saber quien va ganando el juego. 
         short deltaScore = myBoard.getScoreP1() - myBoard.getScoreP2(); 
+
 
     // Si es el final del juego:
        if (remainingMoves == 0){
@@ -44,12 +46,11 @@ short MiniMax::performMiniMax(bool root) {
             {
                 //Creamos un nuevo tablero para no modificar el "original". 
                 Board currentBoard = myBoard; 
-                Movement* currentMove = &availableMoves[i]; 
-
-                short childScore = -1000;
+                Movement* currentMove = &availableMoves[i];
+                short childScore = 0;
                 //Si al jugar, se completó una celda entonces el jugador 1 tiene un turno extra. 
-                if (currentMove->playAndAssignOwner(currentBoard, PLAYER1) == PLAYER1) {// TODO: debo agregar este método a clase Movement 
-                    //El siguiente turno corresponde al jugador max. 
+                if (currentMove->playAndAssignOwner(currentBoard, PLAYER1) == PLAYER1) {
+                    //El siguiente turno corresponde al jugador max.
                     MiniMax childMiniMax = { currentBoard, true, myDepth - 1 };
                     childScore = childMiniMax.performMiniMax(false);
                 }
@@ -58,12 +59,13 @@ short MiniMax::performMiniMax(bool root) {
                     MiniMax childMiniMax = { currentBoard, false, myDepth - 1 };
                     childScore = childMiniMax.performMiniMax(false);
                 }
-               
                 if (childScore > score){
                     score = childScore;
+
                     // Unicamente guardamos el movimiento cuando estamos en el primer nivel del árbol. 
                     if (root) { setBestMove(*currentMove); }
-                }                
+                }  
+                
             } 
         // Si el jugador es mini 
         } else {
@@ -113,7 +115,7 @@ short MiniMax::performProbabilityMiniMax(bool root) {
         return 0;
     }
 
-    short probability;
+    double probability;
     // Si el jugador es max
     if (maxPlayer) {
         probability = 0;
@@ -124,15 +126,15 @@ short MiniMax::performProbabilityMiniMax(bool root) {
             Movement* currentMove = &availableMoves[i];
             short childProbability;
             //Si al jugar, se completó una celda entonces el jugador 1 tiene un turno extra. 
-            if (currentMove->playAndAssignOwner(currentBoard, PLAYER1) == PLAYER1) {// TODO: debo agregar este método a clase Movement 
+            if (currentMove->playAndAssignOwner(currentBoard, PLAYER1) == PLAYER1) {
                 //El siguiente turno corresponde al jugador max. 
                 MiniMax childMiniMax = { currentBoard, true, myDepth - 1 };
-                childProbability = childMiniMax.performMiniMax(false);
+                childProbability = childMiniMax.performProbabilityMiniMax(false);
             }
             else {
                 //El siguiente turno corresponde al jugador min. 
                 MiniMax childMiniMax = { currentBoard, false, myDepth - 1 };
-                childProbability = childMiniMax.performMiniMax(false);
+                childProbability = childMiniMax.performProbabilityMiniMax(false);
             }
             //Si estamos en el primer nivel, entonces seleccionamos como mejor movimiento al que tiene la probabilidad más alta. 
             if (root) {
@@ -164,12 +166,12 @@ short MiniMax::performProbabilityMiniMax(bool root) {
             if (currentMove->playAndAssignOwner(currentBoard, PLAYER2) == PLAYER2) {// TODO: debo agregar este método a clase Movement 
                 //El siguiente turno corresponde al jugador min. 
                 MiniMax childMiniMax = { currentBoard, false, myDepth - 1 };
-                childProbability = childMiniMax.performMiniMax(false);
+                childProbability = childMiniMax.performProbabilityMiniMax(false);
             }
             else {
                 //El siguiente turno corresponde al jugador max. 
                 MiniMax childMiniMax = { currentBoard, true, myDepth - 1 };
-                childProbability = childMiniMax.performMiniMax(false);
+                childProbability = childMiniMax.performProbabilityMiniMax(false);
             }
 
             //Si estamos en el primer nivel, entonces seleccionamos como mejor movimiento al que tiene la probabilidad más baja. 

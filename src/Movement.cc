@@ -82,6 +82,7 @@ OwnerType Movement::playAndAssignOwner(Board& currentBoard, enum OwnerType owner
             return NO_VALID;
         }
         currentCell->east = owner;
+        currentCell->boxChecker(owner);
         if (yPos + 1 < currentBoard.getBoardColSize()) {
             currentBoard.getCell(xPos, yPos + 1)->west = owner;
             currentBoard.getCell(xPos, yPos + 1)->boxChecker(owner);
@@ -95,7 +96,7 @@ OwnerType Movement::playAndAssignOwner(Board& currentBoard, enum OwnerType owner
         currentCell->boxChecker(owner);
         if (xPos > 0) { 
             currentBoard.getCell(xPos - 1, yPos)->south = owner;
-            currentBoard.getCell(xPos - 1, yPos);
+            currentBoard.getCell(xPos - 1, yPos)->boxChecker(owner);
         }
         break;
     case SOUTH:
