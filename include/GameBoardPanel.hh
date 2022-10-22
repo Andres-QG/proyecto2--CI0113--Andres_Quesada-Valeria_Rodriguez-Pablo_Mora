@@ -10,9 +10,7 @@ class GameBoardPanel : public wxPanel
 {
   public:
     GameBoardPanel(wxFrame* parent);
-    GameBoardPanel(wxFrame* parent, Board board);
-    Directions getDirection(); 
-    Movement getTemporalMovement(double xMousePosition, double yMousePosition);
+    GameBoardPanel(wxFrame* parent, Board board); 
     void paintEvent(wxPaintEvent & evt);
     void paintNow();
     void render(wxDC& dc);
@@ -20,6 +18,8 @@ class GameBoardPanel : public wxPanel
   private:
     void OnMouseEvent(wxMouseEvent& evt);
     bool ZoneClicked(wxEvent& evt);
+    Movement getTemporalMovement(double xMousePosition, double yMousePosition);
+    Directions getDirection(double xPosition, double yPosition, int columnIndex, int rowIndex);
     Board myBoard;
 };
 

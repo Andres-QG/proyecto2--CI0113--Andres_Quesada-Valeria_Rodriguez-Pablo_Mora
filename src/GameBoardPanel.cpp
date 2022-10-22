@@ -161,14 +161,41 @@ Movement GameBoardPanel::getTemporalMovement(double xMousePosition, double yMous
   columnIndex = std::min(ncolumns-1, columnIndex);
   rowIndex = std::min(nrows - 1, rowIndex);
 
-  return Movement(1,1,NORTH);
+  return Movement(rowIndex, columnIndex, getDirection(xPosition, yPosition, columnIndex, rowIndex));
+}
+
+Directions GameBoardPanel::getDirection(double xPosition, double yPosition, int columnIndex, int rowIndex){
+  double fromXstart = xPosition - columnIndex; 
+  double fromYstart = yPosition - rowIndex; 
+  // Usamos como "margen" de las líneas 0.2 
+  if(fromYstart < 0.2 && fromYstart > -0.2 && fromXstart > 0.1 && fromXstart < 0.9){
+    return NORTH; 
+  } 
+
+  if(fromYstart < 1.2 && fromYstart > 0.8 && fromXstart > 0.1 && fromXstart < 0.9){
+    return SOUTH;
+  }
+
+  if(fromYstart > 0.1 && fromYstart < 0.9 && fromXstart > -0.2 && fromXstart < 0.2){
+    return WEST;
+  }
+  
+  if(fromYstart > 0.1 && fromYstart < 0.9 && fromXstart > 0.8 && fromXstart < 1.2){
+    return EAST;
+  }
+
+  return EMPTY;
 }
 
 void GameBoardPanel::OnMouseEvent(wxMouseEvent& evt) {
   // Para obtener la posici�n del mouse. 
 	wxPoint position = evt.GetPosition();
-	wxString message = wxString::Format("Left mouse click (x=%d, y=%d)", position.x, position.y);
+	//wxString message = wxString::Format("Left mouse click (x=%d, y=%d)", position.x, position.y);
+  Movement move = getTemporalMovement(position.x, position.y);
+  wxString message = wxString::Format("Left mouse click (row=%d, column=%d, direction=%d)", move.getXPos(), move.getYPos(), move.getLineDirection());
  	wxLogStatus(message);
+  Refresh();
+  
 }
 
 bool GameBoardPanel::ZoneClicked(wxEvent& evt) {
