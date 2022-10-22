@@ -34,3 +34,4 @@ target_link_libraries(main PRIVATE ${wxWidgets_LIBRARIES})
 
 # TODO: avoid using a relative path to this folder
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+

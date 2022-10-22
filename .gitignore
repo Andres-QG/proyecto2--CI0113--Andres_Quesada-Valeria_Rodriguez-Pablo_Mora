@@ -31,7 +31,12 @@
 *.out
 *.app
 
+
 # CMake files
+#source: https://github.com/github/gitignore/blob/main/CMake.gitignore
+#CMake
+build
+
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -44,8 +49,5 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
-# CMake output
-build
-
-# MacOS files
+#MacOS files
 .DS_Store
