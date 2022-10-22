@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 
+
 using namespace std;
 
 enum OwnerType { NO_OWNER, PLAYER1, PLAYER2, NO_VALID };
@@ -28,6 +29,7 @@ public:
 
   friend class Board;
   friend class Movement;
+  friend class GameBoardPanel;
 };
 
 #endif
