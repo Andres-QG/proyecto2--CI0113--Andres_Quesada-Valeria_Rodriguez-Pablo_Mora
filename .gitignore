@@ -31,9 +31,12 @@
 *.out
 *.app
 
+
+# CMake files
 #source: https://github.com/github/gitignore/blob/main/CMake.gitignore
 #CMake
 build
+
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
