@@ -151,11 +151,16 @@ TEST(MovementTest, OnBoardPlayTest) {
   Movement m3(1, 1, NORTH);
   Movement m4(0, 2, WEST);
   Movement m5(0, 1, EAST);
-  EXPECT_FALSE(m1.play(b1, PLAYER1));
-  EXPECT_TRUE(m2.play(b1, PLAYER1));
-  EXPECT_TRUE(m3.play(b1, PLAYER1));
-  EXPECT_TRUE(m4.play(b1, PLAYER1));
-  EXPECT_FALSE(m5.play(b1, PLAYER1));
+  EXPECT_FALSE(m1.isValid(&b1));
+  m1.play(b1, PLAYER1);
+  EXPECT_TRUE(m2.isValid(&b1));
+  m2.play(b1, PLAYER1);
+  EXPECT_TRUE(m3.isValid(&b1));
+  m3.play(b1, PLAYER1);
+  EXPECT_TRUE(m4.isValid(&b1));
+  m4.play(b1, PLAYER1);
+  EXPECT_FALSE(m5.isValid(&b1));
+  m5.play(b1, PLAYER1);
   EXPECT_EQ(*(b1.getCell(0, 2)->getLine(0)), PLAYER1);
   EXPECT_EQ(*(b1.getCell(0, 1)->getLine(1)), PLAYER1);
 }
@@ -339,3 +344,120 @@ TEST(AlfaBetaPruning, CompleteTwoCell) {
 
 	EXPECT_TRUE(bestMove.getXPos() == 1 && bestMove.getYPos() == 0 && bestMove.getLineDirection() == EAST);
 }
+
+TEST(PlayerTest, EasyPlayerCoherence){
+  Board board = { 13 , 6 };
+  PlayerEasy p1(PLAYER1);
+  vector<Movement> movs;
+  for(int i = 0; i < 10; i++){
+    movs.push_back(p1.rehearsedPlay(board));
+  }
+  EXPECT_TRUE(movs[0].isValid(&board));
+  EXPECT_TRUE(movs[1].isValid(&board));
+  EXPECT_TRUE(movs[2].isValid(&board)); 
+  EXPECT_TRUE(movs[3].isValid(&board)); 
+  EXPECT_TRUE(movs[4].isValid(&board)); 
+  EXPECT_TRUE(movs[5].isValid(&board));
+  EXPECT_TRUE(movs[6].isValid(&board));
+  EXPECT_TRUE(movs[7].isValid(&board));
+  EXPECT_TRUE(movs[8].isValid(&board));
+  EXPECT_TRUE(movs[9].isValid(&board));
+  movs.clear();
+}
+
+TEST(PlayerTest, MidPlayerCoherence){
+  Board board = { 13 , 6 };
+  PlayerMid p1(PLAYER1);
+  vector<Movement> movs;
+  //Comprueba que no estén haciendo un SEGFAULT.
+  for(int i = 0; i < 10; i++){
+    movs.push_back(p1.rehearsedPlay(board));
+  }
+  EXPECT_TRUE(movs[0].isValid(&board));
+  EXPECT_TRUE(movs[1].isValid(&board));
+  EXPECT_TRUE(movs[2].isValid(&board)); 
+  EXPECT_TRUE(movs[3].isValid(&board)); 
+  EXPECT_TRUE(movs[4].isValid(&board)); 
+  EXPECT_TRUE(movs[5].isValid(&board));
+  EXPECT_TRUE(movs[6].isValid(&board));
+  EXPECT_TRUE(movs[7].isValid(&board));
+  EXPECT_TRUE(movs[8].isValid(&board));
+  EXPECT_TRUE(movs[9].isValid(&board));
+  movs.clear();
+
+  EXPECT_TRUE(p1.rehearsedPlay(board).isValid(&board));
+  EXPECT_TRUE(p1.rehearsedPlay(board).isValid(&board));
+  EXPECT_TRUE(p1.rehearsedPlay(board).isValid(&board));
+  EXPECT_TRUE(p1.rehearsedPlay(board).isValid(&board))
+
+  //Comprueba que no saque jugadas repetidas.
+  Movement m1 = p1.rehearsedPlay(board);
+  EXPECT_TRUE(m1.isValid(&board));
+  m1.play(board, PLAYER1);
+  Movement m2 = p1.rehearsedPlay(board);
+  EXPECT_TRUE(m2.isValid(&board));
+  m2.play(board, PLAYER1);
+  Movement m3 = p1.rehearsedPlay(board);
+  EXPECT_TRUE(m3.isValid(&board));
+  m3.play(board, PLAYER1);
+  Movement m4 = p2.rehearsedPlay(board);
+  EXPECT_TRUE(m4.isValid(&board));
+  m4.play(board, p1.getId());
+  Movement m5 = p3.rehearsedPlay(board);
+  EXPECT_TRUE(m5.isValid(&board));
+}
+
+TEST(PlayerTest, MidPlayerBoxCompletion){
+  Board board = { 8, 6 };
+  PlayerMid p1(PLAYER1);
+  Movement* m1 = new Movement(0,0,NORTH);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(0,0, EAST);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(0,0, SOUTH);
+  m1->play(board, PLAYER2);
+
+  m1 = new Movement(0,2,NORTH);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(0,2, EAST);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(0,2, SOUTH);
+  m1->play(board, PLAYER2);
+
+  m1 = new Movement(4,1,WEST);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(4,1, EAST);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(4,1, SOUTH);
+  m1->play(board, PLAYER2);
+
+  m1 = new Movement(4,2,WEST);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(4,2, EAST);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(4,2, SOUTH);
+  m1->play(board, PLAYER2);
+
+  m1 = new Movement(5,2,NORTH);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(5,2, EAST);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(5,2, SOUTH);
+  m1->play(board, PLAYER2);
+
+  m1 = new Movement(4,3,NORTH);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(4,3, WEST);
+  m1->play(board, PLAYER2);
+  m1 = new Movement(4,3, SOUTH);
+  m1->play(board, PLAYER2);
+
+  for(int i = 0; i<6; i++){
+    p1.rehearsedPlay(board).play(board, p1.getId());
+  }
+  board.scoreUpdater();
+  EXPECT_EQ(board.getScoreP2(), 6);
+}
+
+// TODO: Cuando este la parte del "controlador" se puede implementar de mejor forma.
+TEST(PlayerTest, EasyvsEasyGame){}

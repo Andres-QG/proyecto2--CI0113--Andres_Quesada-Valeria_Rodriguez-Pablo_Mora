@@ -27,7 +27,7 @@ public:
   // xPos y yPos son indices en el tablero.
   Cell *getCell(int xPos, int yPos);
   // jugadas disponibles.
-  vector<class Movement> getAvailableMoves();
+  vector<Movement> getAvailableMoves();
 };
 
 #endif

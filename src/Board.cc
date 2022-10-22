@@ -50,7 +50,7 @@ Cell *Board::getCell(int xPos, int yPos) {
   return nullptr;
 }
 
-vector<class Movement> Board::getAvailableMoves() {
+vector<Movement> Board::getAvailableMoves() {
   vector<Movement> moves;
   Movement *temp;
   // Verifica todos los lados de cada celda.

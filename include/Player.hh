@@ -5,13 +5,15 @@
 
 // Clase "Jugador"
 class Player {
-private:
+protected:
   // Para saber cual color y que posee.
-  enum OwnerType id;
+  OwnerType id;
 
 public:
-  Player(enum OwnerType owner) : id(owner) {}
+  Player(OwnerType owner) : id(owner) {}
   ~Player() {}
+
+  OwnerType getId() const { return id; }
   // Método que tendrán todos los tipos de jugador(COM) independientemente de la
   // dificultad.
   virtual Movement rehearsedPlay(Board &board) = 0;
@@ -21,12 +23,18 @@ public:
 
 class PlayerEasy : public Player {
 public:
+  PlayerEasy(OwnerType owner) : Player(owner) {}
+  ~PlayerEasy() {}
+
   // Elegir al azar.
   Movement rehearsedPlay(Board &board);
 };
 
 class PlayerMid : public Player {
 public:
+  PlayerMid(OwnerType owner) : Player(owner) {}
+  ~PlayerMid() {}
+
   // Busca un movimiento que no implique un mal movimiento para las celdas
   // alrededor.
   Movement *findBestMove(Board &board, vector<Movement> possibleMoves);
