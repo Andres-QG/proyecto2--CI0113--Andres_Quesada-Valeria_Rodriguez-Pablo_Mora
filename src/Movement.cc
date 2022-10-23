@@ -53,24 +53,28 @@ void Movement::play(Board &currentBoard, OwnerType owner) {
     currentBoard.getCell(xPos, yPos)->west = owner;
     if (yPos > 0) {
       currentBoard.getCell(xPos, yPos - 1)->east = owner;
+      currentBoard.getCell(xPos, yPos - 1)->boxChecker(owner);
     }
     break;
   case EAST:
     currentBoard.getCell(xPos, yPos)->east = owner;
     if (yPos < currentBoard.getBoardColSize() - 1) {
       currentBoard.getCell(xPos, yPos + 1)->west = owner;
+      currentBoard.getCell(xPos, yPos + 1)->boxChecker(owner);
     }
     break;
   case NORTH:
     currentBoard.getCell(xPos, yPos)->north = owner;
     if (xPos > 0) {
       currentBoard.getCell(xPos - 1, yPos)->south = owner;
+      currentBoard.getCell(xPos - 1, yPos)->boxChecker(owner);
     }
     break;
   case SOUTH:
     currentBoard.getCell(xPos, yPos)->south = owner;
     if (xPos < currentBoard.getBoardRowSize() - 1) {
       currentBoard.getCell(xPos + 1, yPos)->north = owner;
+      currentBoard.getCell(xPos + 1, yPos)->boxChecker(owner);
     }
     break;
 
