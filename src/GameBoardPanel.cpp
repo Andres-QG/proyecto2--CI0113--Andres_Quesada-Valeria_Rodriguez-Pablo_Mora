@@ -12,14 +12,15 @@ GameBoardPanel::GameBoardPanel(wxFrame* parent) :
 wxPanel(parent), myBoard(Board(3,3))
 {
   Bind(wxEVT_PAINT, &GameBoardPanel::paintEvent, this);
-  Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseEvent, this);
+  Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick, this);
 }
 
 GameBoardPanel::GameBoardPanel(wxFrame* parent, Board board) :
-    wxPanel(parent), myBoard(board)
+    wxPanel(parent), myBoard(board), scorePlayer1(0), scorePlayer2(0)
 {
     Bind(wxEVT_PAINT, &GameBoardPanel::paintEvent, this);
-    Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseEvent, this);
+    Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick, this);
+    Bind(wxEVT_MOTION, &GameBoardPanel::OnMouseMove, this);
 }
 
 
@@ -136,6 +137,29 @@ void GameBoardPanel::renderGame(wxDC& dc){
     }
 }
 
+void GameBoardPanel::drawTemporalLine(wxDC& dc, int rowIndex, int columIndex, Directions direction, double cellWidth, double cellHeight){
+    double xMargin = 27; 
+    double yMargin = 27; 
+    switch (direction) {
+      dc.SetBrush(*wxWHITE_BRUSH);
+    case WEST:
+        dc.DrawRectangle((xMargin + (columIndex) * (cellWidth) - 2), (yMargin + rowIndex*cellHeight - 2), 5, cellHeight);    
+      break;
+    case EAST:
+        //dc.DrawRectangle((columnStartPosition + cellWidth - 2), rowStartPosition, 7, cellHeight);
+        dc.DrawRectangle((xMargin + (columIndex + 1) * (cellWidth) - 2), (yMargin + rowIndex*cellHeight - 2), 5, cellHeight);
+      break;
+    case NORTH:
+      dc.DrawRectangle((xMargin + (columIndex) * (cellWidth) - 2), (yMargin + rowIndex*cellHeight - 2), cellWidth, 5);
+      break;
+    case SOUTH:
+      dc.DrawRectangle((xMargin + (columIndex) * (cellWidth) - 2), (yMargin + (rowIndex + 1)*cellHeight - 2), cellWidth, 5);
+      break;
+    default:
+      break;
+    }
+}
+
 Movement GameBoardPanel::getTemporalMovement(double xMousePosition, double yMousePosition){
   double xMargin = 27; 
   double yMargin = 27; 
@@ -160,6 +184,9 @@ Movement GameBoardPanel::getTemporalMovement(double xMousePosition, double yMous
 
   columnIndex = std::min(ncolumns-1, columnIndex);
   rowIndex = std::min(nrows - 1, rowIndex);
+
+  double columnStartPosition = xMargin;
+  double rowStartPosition = yMargin;
 
   return Movement(rowIndex, columnIndex, getDirection(xPosition, yPosition, columnIndex, rowIndex));
 }
@@ -187,16 +214,64 @@ Directions GameBoardPanel::getDirection(double xPosition, double yPosition, int 
   return EMPTY;
 }
 
-void GameBoardPanel::OnMouseEvent(wxMouseEvent& evt) {
+void GameBoardPanel::OnMouseLeftClick(wxMouseEvent& evt) {
   // Para obtener la posici�n del mouse. 
 	wxPoint position = evt.GetPosition();
 	//wxString message = wxString::Format("Left mouse click (x=%d, y=%d)", position.x, position.y);
   Movement move = getTemporalMovement(position.x, position.y);
+  if (move.isValid(&myBoard)){
+    int newScore;
+    if (gameTurn == 1) {
+      move.playAndAssignOwner(myBoard, PLAYER1);
+      myBoard.scoreUpdater();
+      newScore = myBoard.getScoreP1();
+      if(newScore > scorePlayer1){
+        scorePlayer1 = newScore;
+        gameTurn *= -1;
+      }
+    } else {
+      move.playAndAssignOwner(myBoard, PLAYER2);
+      myBoard.scoreUpdater();
+      newScore = myBoard.getScoreP2();
+      if(newScore > scorePlayer2){
+        scorePlayer2 = newScore;
+        gameTurn *= -1;
+      }
+    }
+    gameTurn *= -1;
+  }
+
+  Refresh();
+
   wxString message = wxString::Format("Left mouse click (row=%d, column=%d, direction=%d)", move.getXPos(), move.getYPos(), move.getLineDirection());
  	wxLogStatus(message);
-  Refresh();
-  
 }
+
+void GameBoardPanel::OnMouseMove(wxMouseEvent& evt) {
+    wxClientDC dc(this);
+    wxPoint position = evt.GetPosition();
+    Movement move = getTemporalMovement(position.x, position.y);
+    if (move.isValid(&myBoard)){
+      double xMargin = 27;
+      double yMargin = 27;
+      wxSize size = this->GetSize();
+
+      int nrows = myBoard.getBoardRowSize(); //TODO
+      int ncolumns = myBoard.getBoardColSize(); //TODO
+
+      double boardWidth = size.x - 2*xMargin; 
+      double boardHeight = size.y - 2*yMargin;
+
+      double cellWidth = boardWidth / ncolumns; 
+      double cellHeight = boardHeight / nrows;
+
+      drawTemporalLine(dc, move.getXPos(), move.getYPos(), move.getLineDirection(), cellWidth, cellHeight);
+  }
+
+  renderGame(dc);
+
+}
+
 
 bool GameBoardPanel::ZoneClicked(wxEvent& evt) {
   return true;

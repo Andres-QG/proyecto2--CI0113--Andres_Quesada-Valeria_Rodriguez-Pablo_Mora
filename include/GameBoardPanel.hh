@@ -16,11 +16,16 @@ class GameBoardPanel : public wxPanel
     void render(wxDC& dc);
     void renderGame(wxDC& dc);
   private:
-    void OnMouseEvent(wxMouseEvent& evt);
+    void OnMouseLeftClick(wxMouseEvent& evt);
+    void OnMouseMove(wxMouseEvent& evt);
+    void drawTemporalLine(wxDC& dc, int rowIndex, int columIndex, Directions direction, double cellWidth, double cellHeight); 
     bool ZoneClicked(wxEvent& evt);
     Movement getTemporalMovement(double xMousePosition, double yMousePosition);
     Directions getDirection(double xPosition, double yPosition, int columnIndex, int rowIndex);
     Board myBoard;
+    short gameTurn = 1; 
+    short scorePlayer1;
+    short scorePlayer2;
 };
 
 #endif

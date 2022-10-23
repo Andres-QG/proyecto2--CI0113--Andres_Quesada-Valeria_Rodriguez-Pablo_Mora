@@ -22,24 +22,6 @@ MainFrame :: MainFrame (const wxString& title): wxFrame(nullptr, wxID_ANY, title
     wxStaticText* staticText = new wxStaticText(panel, wxID_ANY, "Points", wxPoint(100,100));
 
     Board board = {4,6};
-    Movement move11 = {1,1, SOUTH};
-    move11.playAndAssignOwner(board, PLAYER1);
-    Movement moveE = {1,1, EAST};
-    moveE.playAndAssignOwner(board, PLAYER1);
-    Movement moveS = {2,2, EAST};
-    moveS.playAndAssignOwner(board, PLAYER2);
-    Movement move3 = {0,0, WEST};
-    move3.playAndAssignOwner(board, PLAYER1);
-    Movement move4 = {1,0, WEST};
-    move4.playAndAssignOwner(board, PLAYER2);
-    Movement move5 = {1,0, NORTH};
-    move5.playAndAssignOwner(board, PLAYER2);
-    Movement move6 = {2,2, SOUTH};
-    move6.playAndAssignOwner(board, PLAYER1);
-    Movement move7 = {0,0, SOUTH}; 
-    move7.playAndAssignOwner(board, PLAYER2); 
-    Movement move8 = {0,0, NORTH};
-    move8.playAndAssignOwner(board, PLAYER2);
 
     wxPanel* game_panel = new GameBoardPanel((wxFrame*)this, board);
 
