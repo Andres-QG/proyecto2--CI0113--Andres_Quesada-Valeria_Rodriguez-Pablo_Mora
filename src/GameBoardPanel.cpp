@@ -3,6 +3,7 @@
 #include <GameBoardPanel.hh>
 #include <Board.hh>
 #include <stdio.h>
+#include <MiniMax.hh>
 
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
@@ -19,7 +20,7 @@ GameBoardPanel::GameBoardPanel(wxFrame* parent, Board board) :
     wxPanel(parent), myBoard(board), scorePlayer1(0), scorePlayer2(0)
 {
     Bind(wxEVT_PAINT, &GameBoardPanel::paintEvent, this);
-    Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick, this);
+    Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick2, this);
     Bind(wxEVT_MOTION, &GameBoardPanel::OnMouseMove, this);
 }
 
@@ -214,11 +215,89 @@ Directions GameBoardPanel::getDirection(double xPosition, double yPosition, int 
   return EMPTY;
 }
 
+/*
+void GameBoardPanel::OnMouseLeftClick2(wxMouseEvent& evt) {
+    wxPoint position = evt.GetPosition();
+    Movement move = getTemporalMovement(position.x, position.y);
+    if (move.isValid(&myBoard)){
+      move.playAndAssignOwner(myBoard, PLAYER2);
+      myBoard.scoreUpdater();
+      int auxiliarScorePlayer2 = myBoard.getScoreP2();
+
+      if(auxiliarScorePlayer2 > scorePlayer2){
+        scorePlayer2 = auxiliarScorePlayer2;
+      } else {
+        int auxiliarScorePlayer1; 
+        do
+        {
+          auxiliarScorePlayer1 = scorePlayer1;
+          MiniMax minimax = {myBoard, true, 4};
+          minimax.performAlfaBeta(true, -1500, 1500);
+          minimax.getBestMove().playAndAssignOwner(myBoard, PLAYER1);
+          minimax.~MiniMax();
+          myBoard.scoreUpdater();
+          scorePlayer1 = myBoard.getScoreP1();
+        } while (scorePlayer1 > auxiliarScorePlayer1);       
+      }
+    }
+  wxString message = wxString::Format("PLAYER1:%d, PLAYER2:%d", scorePlayer1, scorePlayer2);
+ 	wxLogStatus(message);
+    Refresh();
+}
+
+*/
+
+void GameBoardPanel::OnMouseLeftClick2(wxMouseEvent& evt) {
+    wxPoint position = evt.GetPosition();
+    Movement move = getTemporalMovement(position.x, position.y);
+    if (move.isValid(&myBoard)){
+      move.playAndAssignOwner(myBoard, PLAYER1);
+      myBoard.scoreUpdater();
+      int auxiliarScorePlayer1 = myBoard.getScoreP1();
+
+      if(auxiliarScorePlayer1 > scorePlayer1){
+        scorePlayer1 = auxiliarScorePlayer1;
+      } else {
+        int auxiliarScorePlayer2; 
+        do
+        {
+          auxiliarScorePlayer2 = scorePlayer2;
+          MiniMax minimax = {myBoard, false, 4};
+          minimax.performAlfaBeta(true, -15000, 15000);
+          minimax.getBestMove().playAndAssignOwner(myBoard, PLAYER2);
+          minimax.~MiniMax();
+          myBoard.scoreUpdater();
+          scorePlayer2 = myBoard.getScoreP2();
+        } while (scorePlayer2 > auxiliarScorePlayer2);       
+      }
+    }
+  wxString message = wxString::Format("PLAYER1:%d, PLAYER2:%d", scorePlayer1, scorePlayer2);
+ 	wxLogStatus(message);
+  Refresh();
+}
+
+void GameBoardPanel::OnMouseLeftClick3(wxMouseEvent& evt){
+  wxPoint position = evt.GetPosition();
+  Movement move = getTemporalMovement(position.x, position.y);
+  if (move.isValid(&myBoard)){
+      move.playAndAssignOwner(myBoard, PLAYER1);
+      myBoard.scoreUpdater();
+      int newScore = myBoard.getScoreP1();
+      if(newScore > scorePlayer1){
+        scorePlayer1 = newScore;  
+      } else {
+        Unbind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick, this);
+      }
+  }
+}
+
+
 void GameBoardPanel::OnMouseLeftClick(wxMouseEvent& evt) {
   // Para obtener la posici�n del mouse. 
 	wxPoint position = evt.GetPosition();
 	//wxString message = wxString::Format("Left mouse click (x=%d, y=%d)", position.x, position.y);
   Movement move = getTemporalMovement(position.x, position.y);
+  
   if (move.isValid(&myBoard)){
     int newScore;
     if (gameTurn == 1) {
@@ -250,6 +329,7 @@ void GameBoardPanel::OnMouseLeftClick(wxMouseEvent& evt) {
 void GameBoardPanel::OnMouseMove(wxMouseEvent& evt) {
     wxClientDC dc(this);
     wxPoint position = evt.GetPosition();
+    //Refresh();
     Movement move = getTemporalMovement(position.x, position.y);
     if (move.isValid(&myBoard)){
       double xMargin = 27;
