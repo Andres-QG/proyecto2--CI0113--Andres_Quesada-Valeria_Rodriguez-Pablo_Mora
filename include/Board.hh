@@ -16,7 +16,7 @@ public:
   Board(int rowSize, int colSize);
   ~Board();
   void increaseScore(enum OwnerType player,
-                     int diff); // TODO:implementar en otras varas.
+                     int diff); 
   int getScoreP1();
   int getScoreP2();
   // Cantidad de filas y columnas.
