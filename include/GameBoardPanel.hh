@@ -13,11 +13,9 @@
 class GameBoardPanel : public wxPanel 
 {
   public:
-    GameBoardPanel(wxFrame* parent);
-    GameBoardPanel(wxFrame* parent, Board board, PlayerType player1, PlayerType player2); 
+    GameBoardPanel(wxFrame* parent, Board& board, PlayerType player1, PlayerType player2); 
     void paintEvent(wxPaintEvent & evt);
     void paintNow();
-    void render(wxDC& dc);
     void renderGame(wxDC& dc);
     void playGame();
     short scorePlayer1;
@@ -30,16 +28,16 @@ class GameBoardPanel : public wxPanel
     void OnMouseLeftClick(wxMouseEvent& evt);
     void OnMouseMove(wxMouseEvent& evt);
     void drawTemporalLine(wxDC& dc, int rowIndex, int columIndex, Directions direction, double cellWidth, double cellHeight); 
-    bool ZoneClicked(wxEvent& evt);
     Movement getTemporalMovement(double xMousePosition, double yMousePosition);
     Directions getDirection(double xPosition, double yPosition, int columnIndex, int rowIndex);
-    Board myBoard;
+    Board& myBoard;
     PlayerType player1;
     PlayerType player2;
     Player* py1;
     Player* py2;
+    Movement temporalMovement = Movement{ -1, -1, EMPTY };
     Movement humanMovement = Movement{-1, -1, EMPTY};
-    int totalMovement;
+    int movements;
     short gameTurn = 1; 
 };
 

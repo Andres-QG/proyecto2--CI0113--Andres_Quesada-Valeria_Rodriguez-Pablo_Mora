@@ -2,12 +2,18 @@
 #define MAINFRAME_HH
 
 #include <wx/wx.h>
+#include <GameBoardPanel.hh>
 
 class MainFrame : public wxFrame
 {
 public:
   MainFrame(const wxString& title);
-  //playGame();
+  void OnTimerMF(wxTimerEvent& event);
+private:
+	wxTimer m_timer;
+	wxTimer* timer;
+	wxStaticText* staticText;
+	Board board;
 };
 
 

@@ -12,24 +12,19 @@ wxBEGIN_EVENT_TABLE(GameBoardPanel, wxPanel)
     EVT_TIMER(1500, GameBoardPanel::OnTimer)
 wxEND_EVENT_TABLE()
 
-GameBoardPanel::GameBoardPanel(wxFrame* parent) :
-wxPanel(parent), myBoard(Board(3,3))
-{
-  Bind(wxEVT_PAINT, &GameBoardPanel::paintEvent, this);
-  Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick, this);
-}
 
-GameBoardPanel::GameBoardPanel(wxFrame* parent, Board board, PlayerType player1, PlayerType player2) :
+GameBoardPanel::GameBoardPanel(wxFrame* parent, Board& board, PlayerType player1, PlayerType player2) :
     wxPanel(parent), myBoard(board), player1(player1), player2(player2), scorePlayer1(0), scorePlayer2(0),
-    m_timer(this, 1500), totalMovement(board.getAvailableMoves().size())
+    m_timer(this, 1500), movements(board.getAvailableMoves().size())
 {
+    //movements = 10;
     PlayerFactory factory;
     py1 = factory.build(player1, PLAYER1);
     py2 = factory.build(player2, PLAYER2);
     Bind(wxEVT_PAINT, &GameBoardPanel::paintEvent, this);
     Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick, this);
     Bind(wxEVT_MOTION, &GameBoardPanel::OnMouseMove, this);
-    m_timer.Start(20);  
+    m_timer.Start(17);  
 }
 
 
@@ -59,6 +54,8 @@ void GameBoardPanel::renderGame(wxDC& dc){
 
     double cellWidth = boardWidth / ncolumns; 
     double cellHeight = boardHeight / nrows;
+
+    drawTemporalLine(dc, temporalMovement.getXPos(), temporalMovement.getYPos(), temporalMovement.getLineDirection(), cellWidth, cellHeight);
 
     double columnStartPosition = xMargin;
     for (int i = 0; i < ncolumns + 1; i++) {
@@ -119,10 +116,7 @@ void GameBoardPanel::renderGame(wxDC& dc){
 }
 
 void GameBoardPanel::OnTimer(wxTimerEvent& event){
-    //Refresh();
     playGame();
-    wxString message = wxString::Format("PLAYER1:%d, PLAYER2:%d", scorePlayer1, scorePlayer2);
- 	  wxLogStatus(message);
     Refresh();
 }
 
@@ -131,34 +125,16 @@ void GameBoardPanel::OnMouseLeftClick(wxMouseEvent& evt) {
     wxPoint position = evt.GetPosition();
     Movement movement = getTemporalMovement(position.x, position.y);
     humanMovement = movement;
-    Refresh();
+    temporalMovement = Movement{ -1, -1, EMPTY };
 }
 
 
 void GameBoardPanel::OnMouseMove(wxMouseEvent& evt) {
     wxClientDC dc(this);
     wxPoint position = evt.GetPosition();
-    //Refresh();
+
     Movement move = getTemporalMovement(position.x, position.y);
-    if (move.isValid(&myBoard)) {
-        double xMargin = 27;
-        double yMargin = 27;
-        wxSize size = this->GetSize();
-
-        int nrows = myBoard.getBoardRowSize(); //TODO
-        int ncolumns = myBoard.getBoardColSize(); //TODO
-
-        double boardWidth = size.x - 2 * xMargin;
-        double boardHeight = size.y - 2 * yMargin;
-
-        double cellWidth = boardWidth / ncolumns;
-        double cellHeight = boardHeight / nrows;
-
-        drawTemporalLine(dc, move.getXPos(), move.getYPos(), move.getLineDirection(), cellWidth, cellHeight);
-    }
-
-    renderGame(dc);
-
+    temporalMovement = move;
 }
 
 
@@ -235,7 +211,6 @@ Directions GameBoardPanel::getDirection(double xPosition, double yPosition, int 
   if(fromYstart > 0.1 && fromYstart < 0.9 && fromXstart > 0.8 && fromXstart < 1.2){
     return EAST;
   }
-
   return EMPTY;
 }
 
@@ -251,38 +226,46 @@ bool GameBoardPanel::doHumanMove(OwnerType owner) {
 
 
 void GameBoardPanel::playGame(){
-  if(gameTurn == 1) {
-    if (player1 != HUMAN){
-      py1 -> rehearsedPlay (myBoard).playAndAssignOwner(myBoard, PLAYER1);
-      gameTurn *= -1;
-    } else {
-      if(doHumanMove(PLAYER1)){
-        gameTurn *= -1;
-      }
-    }
-      myBoard.scoreUpdater(); // delete 
-      int auxiliarScorePlayer1 = myBoard.getScoreP1();
+    if (movements > 0) {
+        if (gameTurn == 1) {
+            if (player1 != HUMAN) {
+                py1->rehearsedPlay(myBoard).playAndAssignOwner(myBoard, PLAYER1);
+                gameTurn *= -1;
+                movements -= 1;
+            }
+            else {
+                if (doHumanMove(PLAYER1)) {
+                    gameTurn *= -1;
+                    movements -= 1;
+                }
+                
+            }
+            int auxiliarScorePlayer1 = myBoard.getScoreP1();
 
-      if(auxiliarScorePlayer1 > scorePlayer1){
-        scorePlayer1 = auxiliarScorePlayer1;
-        gameTurn *= -1;
-      } 
-  } else {
-    if (player2 != HUMAN){
-      py2 -> rehearsedPlay (myBoard).playAndAssignOwner(myBoard, PLAYER2);
-      gameTurn *= -1;
-    } else {
-      if(doHumanMove(PLAYER2)){
-        gameTurn *= -1;
-      }
-    }
-    myBoard.scoreUpdater(); // delete 
-    int auxiliarScorePlayer2 = myBoard.getScoreP2();
+            if (auxiliarScorePlayer1 > scorePlayer1) {
+                scorePlayer1 = auxiliarScorePlayer1;
+                gameTurn *= -1;
+            }
+        }
+        else {
+            if (player2 != HUMAN) {
+                py2->rehearsedPlay(myBoard).playAndAssignOwner(myBoard, PLAYER2);
+                gameTurn *= -1;
+                movements -= 1;
+            }
+            else {
+                if (doHumanMove(PLAYER2)) {
+                    gameTurn *= -1;
+                    movements -= 1;
+                }
+            }
+            int auxiliarScorePlayer2 = myBoard.getScoreP2();
 
-    if(auxiliarScorePlayer2 > scorePlayer2){
-      scorePlayer2 = auxiliarScorePlayer2;
-      gameTurn *= -1;
-    } 
-  }
-  
+            if (auxiliarScorePlayer2 > scorePlayer2) {
+                scorePlayer2 = auxiliarScorePlayer2;
+                gameTurn *= -1;
+            }
+        }
+    }
 }
+
