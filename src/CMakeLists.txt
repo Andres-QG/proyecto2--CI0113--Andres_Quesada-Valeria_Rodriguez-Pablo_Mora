@@ -14,7 +14,7 @@ set(wxWidgets_USE_STATIC 1)
 
 find_package(wxWidgets REQUIRED)
 
-set(SRCS MainFrame.cpp App.cpp GameBoardPanel.cpp)
+set(SRCS MainFrame.cpp App.cpp GameBoardPanel.cpp Board.cc Cell.cc MiniMax.cc Movement.cc Player.cc PlayerFactory.cc)
 
 include(${wxWidgets_USE_FILE})
 
@@ -34,4 +34,3 @@ target_link_libraries(main PRIVATE ${wxWidgets_LIBRARIES})
 
 # TODO: avoid using a relative path to this folder
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include)
-

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 
+
 using namespace std;
 
 /*TODO: Revisar necesidad de no valid.*/
@@ -29,6 +30,7 @@ public:
 
   friend class Board;
   friend class Movement;
+  friend class GameBoardPanel;
 };
 
 #endif

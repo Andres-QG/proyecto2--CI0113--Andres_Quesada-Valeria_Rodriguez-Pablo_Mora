@@ -96,3 +96,58 @@ Movement PlayerMid::findBestMove(Board &board, vector<Movement> possibleMoves) {
   }
   return Movement(false);
 }
+
+Movement PlayerMiniMax::rehearsedPlay(Board &board) {
+  OwnerType max;
+  OwnerType min;
+  if (id == PLAYER1){
+      max = PLAYER1;
+      min = PLAYER2;
+  } else {
+      max = PLAYER2;
+      min = PLAYER1;
+  }
+
+  int depth = 0;
+  int nNodes = 1;
+  int size = board.getAvailableMoves().size();
+  while (nNodes < 5000 && size > 0)
+  {
+      nNodes *= size;
+      size -= 1;
+      depth += 1;
+  }
+  MiniMax minimax = {board, true, depth};
+  minimax.performMiniMax(max, min);
+  return minimax.getBestMove();
+}
+
+Movement PlayerAlfaBeta::rehearsedPlay(Board& board) {
+    OwnerType max;
+    OwnerType min;
+    if (id == PLAYER1) {
+        max = PLAYER1;
+        min = PLAYER2;
+    }
+    else {
+        max = PLAYER2;
+        min = PLAYER1;
+    }
+
+    int depth = 0;
+    int nNodes = 1;
+    int size = board.getAvailableMoves().size();
+    while (nNodes < 200000 && size > 0)
+    {
+        nNodes *= size;
+        size -= 1;
+        depth += 1;
+    }
+    MiniMax minimax = { board, true, depth };
+    minimax.performAlfaBeta(max, min, -15000, 15000);
+    return minimax.getBestMove();
+}
+
+Movement PlayerHuman::rehearsedPlay(Board &board) {
+  return Movement{-1, -1, EMPTY};
+}

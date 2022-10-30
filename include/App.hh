@@ -12,6 +12,9 @@ class App : public wxApp
 {
 public:
   bool OnInit();
+  void OnInitFrame(int nRows, int nColumns, PlayerType player1, PlayerType player2);
+  void OnInitDialog();
+  void OnRestartButtonClicked(wxCommandEvent& evt);
   GameBoardPanel * drawPane;
 
 };

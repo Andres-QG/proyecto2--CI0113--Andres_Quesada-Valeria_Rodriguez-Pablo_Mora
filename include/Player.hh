@@ -2,6 +2,9 @@
 #define PLAYER_HH
 
 #include "MiniMax.hh"
+//#include "GameBoardPanel.hh"
+
+
 
 // Clase "Jugador"
 class Player {
@@ -10,7 +13,7 @@ protected:
   OwnerType id;
 
 public:
-  Player(enum OwnerType owner) : id(owner) {}
+  Player(OwnerType owner) : id(owner) {}
   ~Player() {}
 
   OwnerType getId() const { return id; }
@@ -49,9 +52,23 @@ public:
 };
 
 // MiniMax
-class PlayerHard : public Player {
+class PlayerMiniMax : public Player {
 public:
+  PlayerMiniMax(OwnerType owner) : Player(owner) {}
   Movement rehearsedPlay(Board &board);
 };
+
+class PlayerAlfaBeta : public Player {
+public:
+  PlayerAlfaBeta(OwnerType owner) : Player(owner) {}
+  Movement rehearsedPlay(Board &board);
+};
+
+class PlayerHuman : public Player {
+public:
+  PlayerHuman(OwnerType owner) : Player(owner) {}
+  Movement rehearsedPlay(Board &board); //, Movement gameBoardMove
+};
+
 
 #endif

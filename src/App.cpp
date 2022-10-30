@@ -9,11 +9,28 @@
 wxIMPLEMENT_APP(App);
 
 bool App::OnInit() {
-  MainFrame* mainFrame = new MainFrame ("Dots & Boxes");
-  mainFrame->SetClientSize(800,600);
-  mainFrame->Center();
-  drawPane = new GameBoardPanel((wxFrame*)mainFrame);
+    this->Bind(wxEVT_BUTTON, &App::OnRestartButtonClicked, this);
+  //drawPane = new GameBoardPanel((wxFrame*)mainFrame);
+    OnInitFrame(3, 5, HUMAN, ALFABETA_PRUNING);
 
-  mainFrame->Show();
-  return true;
+    
+
+    return true;
+
+}
+
+void App::OnInitFrame(int nRows, int nColumns, PlayerType player1, PlayerType player2) {
+    MainFrame* mainFrame = new MainFrame("Dots & Boxes", nRows, nColumns, player1, player2);
+    mainFrame->SetClientSize(800, 600);
+    mainFrame->Center();
+    mainFrame->Show();    
+}
+
+void App::OnInitDialog() {
+    wxLogMessage("Work in progress...");
+
+}
+
+void App::OnRestartButtonClicked(wxCommandEvent& evt) {
+    OnInitDialog();
 }
