@@ -49,23 +49,23 @@ TEST(BoardTest, ScoreTest) {
   Board b1(15, 10);
   EXPECT_EQ(b1.getScoreP1(), 0);
   EXPECT_EQ(b1.getScoreP2(), 0);
+
   for (int i = 0; i < b1.getBoardRowSize(); i++) {
     for (int j = 0; j < b1.getBoardColSize() - 1; j++) {
-      *(b1.getCell(i, j)->getLine(0)) = PLAYER1;
-      *(b1.getCell(i, j)->getLine(1)) = PLAYER1;
-      *(b1.getCell(i, j)->getLine(2)) = PLAYER1;
-      *(b1.getCell(i, j)->getLine(3)) = PLAYER1;
-      b1.getCell(i, j)->boxChecker(PLAYER1);
+      Movement(i, j, NORTH).playAndAssignOwner(b1, PLAYER1);
+      Movement(i, j, SOUTH).playAndAssignOwner(b1, PLAYER1);
+      Movement(i, j, EAST).playAndAssignOwner(b1, PLAYER1);
+      Movement(i, j, WEST).playAndAssignOwner(b1, PLAYER1);
     }
   }
   for (int i = 0; i < b1.getBoardRowSize(); i++) {
-    *(b1.getCell(i, b1.getBoardColSize() - 1)->getLine(0)) = PLAYER2;
-    *(b1.getCell(i, b1.getBoardColSize() - 1)->getLine(1)) = PLAYER2;
-    *(b1.getCell(i, b1.getBoardColSize() - 1)->getLine(2)) = PLAYER2;
-    *(b1.getCell(i, b1.getBoardColSize() - 1)->getLine(3)) = PLAYER2;
-    b1.getCell(i, b1.getBoardColSize() - 1)->boxChecker(PLAYER2);
+    Movement(i, b1.getBoardColSize() - 1, NORTH)
+        .playAndAssignOwner(b1, PLAYER2);
+    Movement(i, b1.getBoardColSize() - 1, SOUTH)
+        .playAndAssignOwner(b1, PLAYER2);
+    Movement(i, b1.getBoardColSize() - 1, EAST).playAndAssignOwner(b1, PLAYER2);
+    Movement(i, b1.getBoardColSize() - 1, WEST).playAndAssignOwner(b1, PLAYER2);
   }
-  b1.scoreUpdater();
   EXPECT_EQ(b1.getScoreP1(), 14 * 8);
   EXPECT_EQ(b1.getScoreP2(), 14);
 }
@@ -80,17 +80,15 @@ TEST(BoardTest, SEGFPrevisionTest) {
 }
 
 void modifyBoardTestMethod(Board board) {
-  *(board.getCell(0, 0)->getLine(0)) = PLAYER1;
-  *(board.getCell(0, 0)->getLine(1)) = PLAYER1;
-  *(board.getCell(0, 0)->getLine(2)) = PLAYER1;
-  *(board.getCell(0, 0)->getLine(3)) = PLAYER1;
-  board.getCell(0, 0)->boxChecker(PLAYER1);
+  Movement(0, 0, NORTH).playAndAssignOwner(board, PLAYER1);
+  Movement(0, 0, SOUTH).playAndAssignOwner(board, PLAYER1);
+  Movement(0, 0, EAST).playAndAssignOwner(board, PLAYER1);
+  Movement(0, 0, WEST).playAndAssignOwner(board, PLAYER1);
 }
 
 TEST(BoardTest, CopyTest) {
   Board b1(20, 5);
   modifyBoardTestMethod(b1);
-  b1.scoreUpdater();
   EXPECT_EQ(b1.getScoreP1(), 0);
   *(b1.getCell(0, 1)->getLine(0)) = PLAYER2;
   Board b1copy = b1;
@@ -131,13 +129,11 @@ TEST(BoardTest, AvailableMovesTest) {
 
   Board b2(15, 15);
   for (int i = 0; i < 3; i++) {
-    *(b2.getCell(i, i)->getLine(0)) = PLAYER2;
-    *(b2.getCell(i, i)->getLine(1)) = PLAYER2;
-    *(b2.getCell(i, i)->getLine(2)) = PLAYER2;
-    *(b2.getCell(i, i)->getLine(3)) = PLAYER2;
-    b2.getCell(i, i)->boxChecker(PLAYER2);
+    Movement(i, i, NORTH).playAndAssignOwner(b2, PLAYER2);
+    Movement(i, i, SOUTH).playAndAssignOwner(b2, PLAYER2);
+    Movement(i, i, EAST).playAndAssignOwner(b2, PLAYER2);
+    Movement(i, i, WEST).playAndAssignOwner(b2, PLAYER2);
   }
-  b2.scoreUpdater();
   EXPECT_EQ(b2.getScoreP2(), 3);
   moves = b2.getAvailableMoves();
   EXPECT_EQ(moves.size(), 412);
@@ -151,16 +147,11 @@ TEST(MovementTest, OnBoardPlayTest) {
   Movement m3(1, 1, NORTH);
   Movement m4(0, 2, WEST);
   Movement m5(0, 1, EAST);
-  EXPECT_FALSE(m1.isValid(&b1));
-  m1.play(b1, PLAYER1);
-  EXPECT_TRUE(m2.isValid(&b1));
-  m2.play(b1, PLAYER1);
-  EXPECT_TRUE(m3.isValid(&b1));
-  m3.play(b1, PLAYER1);
-  EXPECT_TRUE(m4.isValid(&b1));
-  m4.play(b1, PLAYER1);
-  EXPECT_FALSE(m5.isValid(&b1));
-  m5.play(b1, PLAYER1);
+  EXPECT_EQ(m1.playAndAssignOwner(b1, PLAYER1), NO_VALID);
+  EXPECT_NE(m2.playAndAssignOwner(b1, PLAYER1), NO_VALID);
+  EXPECT_NE(m3.playAndAssignOwner(b1, PLAYER1), NO_VALID);
+  EXPECT_NE(m4.playAndAssignOwner(b1, PLAYER1), NO_VALID);
+  EXPECT_EQ(m5.playAndAssignOwner(b1, PLAYER1), NO_VALID);
   EXPECT_EQ(*(b1.getCell(0, 2)->getLine(0)), PLAYER1);
   EXPECT_EQ(*(b1.getCell(0, 1)->getLine(1)), PLAYER1);
 }
@@ -194,7 +185,7 @@ TEST(MiniMaxTest, FirstTwoMovements) {
   MiniMax miniMax = {board, true, 4};
   miniMax.performMiniMax(true);
   Movement bestMove = miniMax.getBestMove();
-  bestMove.play(board, PLAYER1);
+  bestMove.playAndAssignOwner(board, PLAYER1);
 
   // Primer movimiento
   EXPECT_TRUE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 &&
@@ -234,11 +225,11 @@ TEST(MiniMaxTest, NotCompleteThirdLine) {
 TEST(MiniMaxTest, CompleteCell) {
   Board board = {3, 3};
   Movement moveN = {0, 0, NORTH};
-  moveN.play(board, PLAYER1);
+  moveN.playAndAssignOwner(board, PLAYER1);
   Movement moveS = {0, 0, SOUTH};
-  moveS.play(board, PLAYER2);
+  moveS.playAndAssignOwner(board, PLAYER2);
   Movement moveE = {0, 0, EAST};
-  moveE.play(board, PLAYER1);
+  moveE.playAndAssignOwner(board, PLAYER1);
 
   MiniMax miniMax = {board, false, 4};
   miniMax.performMiniMax(true);
@@ -252,17 +243,17 @@ TEST(MiniMaxTest, CompleteCell) {
 TEST(MiniMaxTest, CompleteTwoCell) {
   Board board = {3, 3};
   Movement moveN = {1, 0, NORTH};
-  moveN.play(board, PLAYER1);
+  moveN.playAndAssignOwner(board, PLAYER1);
   Movement moveW = {1, 0, WEST};
-  moveW.play(board, PLAYER2);
+  moveW.playAndAssignOwner(board, PLAYER2);
   Movement moveS = {1, 0, SOUTH};
-  moveS.play(board, PLAYER1);
+  moveS.playAndAssignOwner(board, PLAYER1);
   Movement moveN2 = {1, 1, NORTH};
-  moveN2.play(board, PLAYER2);
+  moveN2.playAndAssignOwner(board, PLAYER2);
   Movement moveS2 = {1, 1, SOUTH};
-  moveS2.play(board, PLAYER1);
+  moveS2.playAndAssignOwner(board, PLAYER1);
   Movement moveE2 = {1, 1, EAST};
-  moveE2.play(board, PLAYER2);
+  moveE2.playAndAssignOwner(board, PLAYER2);
 
   MiniMax miniMax = {board, true, 4};
   miniMax.performMiniMax(true);
@@ -279,7 +270,7 @@ TEST(AlfaBetaPruning, FirstTwoMovements) {
   MiniMax miniMax = {board, true, 4};
   miniMax.performAlfaBeta(true, -15000, 15000);
   Movement bestMove = miniMax.getBestMove();
-  bestMove.play(board, PLAYER1);
+  bestMove.playAndAssignOwner(board, PLAYER1);
 
   // Primer movimiento
   EXPECT_TRUE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 &&
@@ -318,11 +309,11 @@ TEST(AlfaBetaPruning, NotCompleteThirdLine) {
 TEST(AlfaBetaPruning, CompleteCell) {
   Board board = {3, 3};
   Movement moveN = {0, 0, NORTH};
-  moveN.play(board, PLAYER1);
+  moveN.playAndAssignOwner(board, PLAYER1);
   Movement moveS = {0, 0, SOUTH};
-  moveS.play(board, PLAYER2);
+  moveS.playAndAssignOwner(board, PLAYER2);
   Movement moveE = {0, 0, EAST};
-  moveE.play(board, PLAYER1);
+  moveE.playAndAssignOwner(board, PLAYER1);
 
   MiniMax miniMax = {board, false, 4};
   miniMax.performAlfaBeta(true, -15000, 15000);
@@ -335,17 +326,17 @@ TEST(AlfaBetaPruning, CompleteCell) {
 TEST(AlfaBetaPruning, CompleteTwoCell) {
   Board board = {3, 3};
   Movement moveN = {1, 0, NORTH};
-  moveN.play(board, PLAYER1);
+  moveN.playAndAssignOwner(board, PLAYER1);
   Movement moveW = {1, 0, WEST};
-  moveW.play(board, PLAYER2);
+  moveW.playAndAssignOwner(board, PLAYER2);
   Movement moveS = {1, 0, SOUTH};
-  moveS.play(board, PLAYER1);
+  moveS.playAndAssignOwner(board, PLAYER1);
   Movement moveN2 = {1, 1, NORTH};
-  moveN2.play(board, PLAYER2);
+  moveN2.playAndAssignOwner(board, PLAYER2);
   Movement moveS2 = {1, 1, SOUTH};
-  moveS2.play(board, PLAYER1);
+  moveS2.playAndAssignOwner(board, PLAYER1);
   Movement moveE2 = {1, 1, EAST};
-  moveE2.play(board, PLAYER2);
+  moveE2.playAndAssignOwner(board, PLAYER2);
 
   MiniMax miniMax = {board, true, 4};
   miniMax.performAlfaBeta(true, -15000, 15000);
@@ -359,19 +350,13 @@ TEST(PlayerTest, EasyPlayerCoherence) {
   Board board = {13, 6};
   PlayerEasy p1(PLAYER1);
   vector<Movement> movs;
+  Movement easyPlay = p1.rehearsedPlay(board);
+  ;
   for (int i = 0; i < 10; i++) {
-    movs.push_back(p1.rehearsedPlay(board));
+    easyPlay = p1.rehearsedPlay(board);
+    movs.push_back(easyPlay);
+    EXPECT_NE(easyPlay.playAndAssignOwner(board, PLAYER1), NO_VALID);
   }
-  EXPECT_TRUE(movs[0].isValid(&board));
-  EXPECT_TRUE(movs[1].isValid(&board));
-  EXPECT_TRUE(movs[2].isValid(&board));
-  EXPECT_TRUE(movs[3].isValid(&board));
-  EXPECT_TRUE(movs[4].isValid(&board));
-  EXPECT_TRUE(movs[5].isValid(&board));
-  EXPECT_TRUE(movs[6].isValid(&board));
-  EXPECT_TRUE(movs[7].isValid(&board));
-  EXPECT_TRUE(movs[8].isValid(&board));
-  EXPECT_TRUE(movs[9].isValid(&board));
   movs.clear();
 }
 
@@ -379,94 +364,74 @@ TEST(PlayerTest, MidPlayerCoherence) {
   Board board = {13, 6};
   PlayerMid p1(PLAYER1);
   vector<Movement> movs;
+  Movement midPlay = p1.rehearsedPlay(board);
   // Comprueba que no estén haciendo un SEGFAULT.
   for (int i = 0; i < 10; i++) {
-    movs.push_back(p1.rehearsedPlay(board));
+    midPlay = p1.rehearsedPlay(board);
+    movs.push_back(midPlay);
+    EXPECT_NE(midPlay.playAndAssignOwner(board, PLAYER1), NO_VALID);
   }
-  EXPECT_TRUE(movs[0].isValid(&board));
-  EXPECT_TRUE(movs[1].isValid(&board));
-  EXPECT_TRUE(movs[2].isValid(&board));
-  EXPECT_TRUE(movs[3].isValid(&board));
-  EXPECT_TRUE(movs[4].isValid(&board));
-  EXPECT_TRUE(movs[5].isValid(&board));
-  EXPECT_TRUE(movs[6].isValid(&board));
-  EXPECT_TRUE(movs[7].isValid(&board));
-  EXPECT_TRUE(movs[8].isValid(&board));
-  EXPECT_TRUE(movs[9].isValid(&board));
   movs.clear();
 
-  EXPECT_TRUE(p1.rehearsedPlay(board).isValid(&board));
-  EXPECT_TRUE(p1.rehearsedPlay(board).isValid(&board));
-  EXPECT_TRUE(p1.rehearsedPlay(board).isValid(&board));
-  EXPECT_TRUE(p1.rehearsedPlay(board).isValid(&board));
-
-  // Comprueba que no saque jugadas repetidas.
   Movement m1 = p1.rehearsedPlay(board);
-  EXPECT_TRUE(m1.isValid(&board));
-  m1.play(board, PLAYER1);
+  EXPECT_NE(m1.playAndAssignOwner(board, PLAYER1), NO_VALID);
   Movement m2 = p1.rehearsedPlay(board);
-  EXPECT_TRUE(m2.isValid(&board));
-  m2.play(board, PLAYER1);
+  EXPECT_NE(m2.playAndAssignOwner(board, PLAYER1), NO_VALID);
   Movement m3 = p1.rehearsedPlay(board);
-  EXPECT_TRUE(m3.isValid(&board));
-  m3.play(board, PLAYER1);
+  EXPECT_NE(m3.playAndAssignOwner(board, PLAYER1), NO_VALID);
   Movement m4 = p1.rehearsedPlay(board);
-  EXPECT_TRUE(m4.isValid(&board));
-  m4.play(board, p1.getId());
-  Movement m5 = p1.rehearsedPlay(board);
-  EXPECT_TRUE(m5.isValid(&board));
+  EXPECT_NE(m4.playAndAssignOwner(board, PLAYER1), NO_VALID);
 }
 
 TEST(PlayerTest, MidPlayerBoxCompletion) {
   Board board = {8, 6};
   PlayerMid p1(PLAYER1);
   Movement *m1 = new Movement(0, 0, NORTH);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(0, 0, EAST);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(0, 0, SOUTH);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
 
   m1 = new Movement(0, 2, NORTH);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(0, 2, EAST);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(0, 2, SOUTH);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
 
   m1 = new Movement(4, 1, WEST);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(4, 1, EAST);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(4, 1, SOUTH);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
 
   m1 = new Movement(4, 2, WEST);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(4, 2, EAST);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(4, 2, SOUTH);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
 
   m1 = new Movement(5, 2, NORTH);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(5, 2, EAST);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(5, 2, SOUTH);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
 
   m1 = new Movement(4, 3, NORTH);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(4, 3, WEST);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
   m1 = new Movement(4, 3, SOUTH);
-  m1->play(board, PLAYER2);
+  m1->playAndAssignOwner(board, PLAYER2);
 
   for (int i = 0; i < 6; i++) {
-    p1.rehearsedPlay(board).play(board, p1.getId());
+    p1.rehearsedPlay(board).playAndAssignOwner(board, p1.getId());
   }
-  board.scoreUpdater();
-  EXPECT_EQ(board.getScoreP2(), 6);
+  EXPECT_EQ(board.getScoreP1(), 6);
 }
 
 // TODO: Cuando este la parte del "controlador" se puede implementar de mejor

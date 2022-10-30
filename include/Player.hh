@@ -10,7 +10,7 @@ protected:
   OwnerType id;
 
 public:
-  Player(OwnerType owner) : id(owner) {}
+  Player(enum OwnerType owner) : id(owner) {}
   ~Player() {}
 
   OwnerType getId() const { return id; }
@@ -23,7 +23,7 @@ public:
 
 class PlayerEasy : public Player {
 public:
-  PlayerEasy(OwnerType owner) : Player(owner) {}
+  PlayerEasy(enum OwnerType owner) : Player(owner) {}
   ~PlayerEasy() {}
 
   // Elegir al azar.
@@ -32,12 +32,12 @@ public:
 
 class PlayerMid : public Player {
 public:
-  PlayerMid(OwnerType owner) : Player(owner) {}
+  PlayerMid(enum OwnerType owner) : Player(owner) {}
   ~PlayerMid() {}
 
   // Busca un movimiento que no implique un mal movimiento para las celdas
   // alrededor.
-  Movement *findBestMove(Board &board, vector<Movement> possibleMoves);
+  Movement findBestMove(Board &board, vector<Movement> possibleMoves);
   /*
   Busca confundir al jugador medio cerrando una caja,
   o busca la posibilidad de cerrar alguna caja, cuando
@@ -45,7 +45,7 @@ public:
   acercarse al objetivo de cerrar, busca una opción
   que no afecte, si no la encuentra, elige al azar.
    */
-  Movement rehearsedPlay(Board &board);
+  Movement rehearsedPlay(Board &board); // cambios del prof. , revisar validez
 };
 
 // MiniMax

@@ -1,7 +1,9 @@
 #include "Movement.hh"
 
 Movement::Movement(int xPos, int yPos, Directions lineDirection)
-    : xPos(xPos), yPos(yPos), lineDirection(lineDirection) {}
+    : xPos(xPos), yPos(yPos), lineDirection(lineDirection), valid(true) {}
+
+Movement::Movement(bool valid) : valid(valid) {}
 
 Movement::~Movement() {}
 
@@ -11,93 +13,29 @@ int Movement::getYPos() { return yPos; }
 
 Directions Movement::getLineDirection() { return lineDirection; }
 
+bool Movement::isValid() { return valid; }
 // Metodo "Jugar":
-bool Movement::isValid(Board *currentBoard) {
-  if (!currentBoard->getCell(xPos, yPos)) {
-    return false;
-  }
-  switch (lineDirection) {
-  case WEST:
-    if (currentBoard->getCell(xPos, yPos)->west != NO_OWNER) {
-      return false;
-    }
-    break;
-  case EAST:
-    if (currentBoard->getCell(xPos, yPos)->east != NO_OWNER) {
-      return false;
-    }
-    break;
-  case NORTH:
-    if (currentBoard->getCell(xPos, yPos)->north != NO_OWNER) {
-      return false;
-    }
-    break;
-  case SOUTH:
-    if (currentBoard->getCell(xPos, yPos)->south != NO_OWNER) {
-      return false;
-    }
-    break;
-
-  default:
-    return false;
-  }
-  return true;
-}
-
-void Movement::play(Board &currentBoard, OwnerType owner) {
-  if (!isValid(&currentBoard)) {
-    return;
-  }
-  switch (lineDirection) {
-  case WEST:
-    currentBoard.getCell(xPos, yPos)->west = owner;
-    if (yPos > 0) {
-      currentBoard.getCell(xPos, yPos - 1)->east = owner;
-      currentBoard.getCell(xPos, yPos - 1)->boxChecker(owner);
-    }
-    break;
-  case EAST:
-    currentBoard.getCell(xPos, yPos)->east = owner;
-    if (yPos < currentBoard.getBoardColSize() - 1) {
-      currentBoard.getCell(xPos, yPos + 1)->west = owner;
-      currentBoard.getCell(xPos, yPos + 1)->boxChecker(owner);
-    }
-    break;
-  case NORTH:
-    currentBoard.getCell(xPos, yPos)->north = owner;
-    if (xPos > 0) {
-      currentBoard.getCell(xPos - 1, yPos)->south = owner;
-      currentBoard.getCell(xPos - 1, yPos)->boxChecker(owner);
-    }
-    break;
-  case SOUTH:
-    currentBoard.getCell(xPos, yPos)->south = owner;
-    if (xPos < currentBoard.getBoardRowSize() - 1) {
-      currentBoard.getCell(xPos + 1, yPos)->north = owner;
-      currentBoard.getCell(xPos + 1, yPos)->boxChecker(owner);
-    }
-    break;
-
-  default:
-    break;
-  }
-  currentBoard.getCell(xPos, yPos)->boxChecker(owner);
-}
 /*
 Función creada a la medida de MiniMax. Se encarga de realizar la jugada y en
 caso de que se complete la celda devuelve el dueño de la esta. */
-OwnerType Movement::playAndAssignOwner(Board &currentBoard, OwnerType owner) {
+OwnerType Movement::playAndAssignOwner(Board &currentBoard,
+                                       enum OwnerType owner) {
   Cell *currentCell = currentBoard.getCell(xPos, yPos);
+  if (!currentCell) {
+    return NO_VALID;
+  }
+  int completed = 0;
   switch (lineDirection) {
   case WEST:
     if (currentCell->west != NO_OWNER) {
-      return NO_VALID; // TODO
+      return NO_VALID;
     }
     currentCell->west = owner;
-    currentCell->boxChecker(owner);
+    completed += currentCell->boxChecker(owner) ? 1 : 0;
     if (yPos > 0) {
       currentBoard.getCell(xPos, yPos - 1)->east = owner;
-      currentBoard.getCell(xPos, yPos - 1)->boxChecker(owner);
+      completed +=
+          currentBoard.getCell(xPos, yPos - 1)->boxChecker(owner) ? 1 : 0;
     }
     break;
   case EAST:
@@ -105,38 +43,46 @@ OwnerType Movement::playAndAssignOwner(Board &currentBoard, OwnerType owner) {
       return NO_VALID;
     }
     currentCell->east = owner;
-    currentCell->boxChecker(owner);
+    completed += currentCell->boxChecker(owner) ? 1 : 0;
     if (yPos + 1 < currentBoard.getBoardColSize()) {
       currentBoard.getCell(xPos, yPos + 1)->west = owner;
-      currentBoard.getCell(xPos, yPos + 1)->boxChecker(owner);
+      completed +=
+          currentBoard.getCell(xPos, yPos + 1)->boxChecker(owner) ? 1 : 0;
     }
     break;
   case NORTH:
-    if (currentBoard.getCell(xPos, yPos)->north != NO_OWNER) {
+    if (currentCell->north != NO_OWNER) {
       return NO_VALID;
     }
-    currentBoard.getCell(xPos, yPos)->north = owner;
-    currentCell->boxChecker(owner);
+    currentCell->north = owner;
+    completed += currentCell->boxChecker(owner) ? 1 : 0;
     if (xPos > 0) {
       currentBoard.getCell(xPos - 1, yPos)->south = owner;
-      currentBoard.getCell(xPos - 1, yPos)->boxChecker(owner);
+      completed +=
+          currentBoard.getCell(xPos - 1, yPos)->boxChecker(owner) ? 1 : 0;
     }
     break;
   case SOUTH:
-    if (currentBoard.getCell(xPos, yPos)->south != NO_OWNER) {
+    if (currentCell->south != NO_OWNER) {
       return NO_VALID;
     }
-    currentBoard.getCell(xPos, yPos)->south = owner;
-    currentCell->boxChecker(owner);
+    currentCell->south = owner;
+    completed += currentCell->boxChecker(owner) ? 1 : 0;
 
     if (xPos < currentBoard.getBoardRowSize() - 1) {
       currentBoard.getCell(xPos + 1, yPos)->north = owner;
-      currentBoard.getCell(xPos + 1, yPos)->boxChecker(owner);
+      completed +=
+          currentBoard.getCell(xPos + 1, yPos)->boxChecker(owner) ? 1 : 0;
     }
     break;
 
   default:
     return NO_OWNER;
   }
-  return currentCell->getBoxOwner();
+  if (completed > 0) {
+    // suma de cajas
+    currentBoard.increaseScore(owner, completed);
+    return owner;
+  }
+  return NO_OWNER;
 }
