@@ -49,42 +49,44 @@ Movement PlayerMid::rehearsedPlay(Board &board) {
     }
   }
   // Revisar opciones.
-  if (!tripleOptionMoves.empty() && findBestMove(board, tripleOptionMoves)) {
-    return *(findBestMove(board, tripleOptionMoves));
-  } else if (!everyOptionMoves.empty() &&
-             findBestMove(board, everyOptionMoves)) {
-    return *(findBestMove(board, everyOptionMoves));
+  Movement bestMove = findBestMove(board, tripleOptionMoves);
+  if (!tripleOptionMoves.empty() && bestMove.isValid()) {
+    return bestMove;
   } else {
-    return randomPlay(board);
+    bestMove = findBestMove(board, everyOptionMoves);
+    if (!everyOptionMoves.empty() && bestMove.isValid()) {
+      return bestMove;
+    } else {
+      return randomPlay(board);
+    }
   }
 }
 
-Movement *PlayerMid::findBestMove(Board &board,
-                                  vector<Movement> possibleMoves) {
+Movement PlayerMid::findBestMove(Board &board, vector<Movement> possibleMoves) {
   for (int i = 0; i < possibleMoves.size(); i++) {
     int x = possibleMoves[i].getXPos();
     int y = possibleMoves[i].getYPos();
     switch (possibleMoves[i].getLineDirection()) {
     case WEST:
       if (y > 0 && board.getCell(x, y - 1)->availableMovesCount() > 2) {
-        return &(possibleMoves[i]);
+        return possibleMoves[i];
       }
       break;
     case EAST:
-      if (y < board.getBoardColSize() &&
+      if (y < board.getBoardColSize()-1 &&
           board.getCell(x, y + 1)->availableMovesCount() > 2) {
-        return &(possibleMoves[i]);
+        return possibleMoves[i];
       }
       break;
     case NORTH:
       if (x > 0 && board.getCell(x - 1, y)->availableMovesCount() > 2) {
-        return &(possibleMoves[i]);
+        return possibleMoves[i];
       }
       break;
     case SOUTH:
-      if (x < board.getBoardRowSize() &&
+      if (x < board.getBoardRowSize()-1 &&
           board.getCell(x + 1, y)->availableMovesCount() > 2) {
-        return &(possibleMoves[i]);
+        return possibleMoves[i];
       }
       break;
 

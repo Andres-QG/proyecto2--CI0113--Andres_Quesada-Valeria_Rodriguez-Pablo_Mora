@@ -17,9 +17,15 @@ Board::~Board() {
   boxes.clear();
 }
 
-int Board::getScoreP1() { return player1Score; }
+void Board::increaseScore(OwnerType player, int diff) {
+  switch (player) {
+  case PLAYER1:
+    player1Score += diff;
+    break;
+  case PLAYER2:
+    player2Score += diff;
+    break;
 
-int Board::getScoreP2() { return player2Score; }
 
 void Board::increaseScore(enum OwnerType player, int diff) {
     switch (player) {
@@ -34,22 +40,9 @@ void Board::increaseScore(enum OwnerType player, int diff) {
     }
 }
 
-void Board::scoreUpdater() {
-  int count1 = 0, count2 = 0;
-  // Cuenta las cajas de cada uno.
-  for (int i = 0; i < boxes.size(); i++) {
-    for (int j = 0; j < boxes[i].size(); j++) {
-      if (boxes[i][j].getBoxOwner() == PLAYER1) {
-        count1++;
-      } else if (boxes[i][j].getBoxOwner() == PLAYER2) {
-        count2++;
-      }
-    }
-  }
-  // Se actualiza.
-  player1Score = count1;
-  player2Score = count2;
-}
+int Board::getScoreP1() { return player1Score; }
+
+int Board::getScoreP2() { return player2Score; }
 
 int Board::getBoardRowSize() { return boxes.size(); }
 

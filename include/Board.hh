@@ -15,11 +15,8 @@ public:
   // los size son el numero de columnas o filas de puntos.
   Board(int rowSize, int colSize);
   ~Board();
-  // Recorre el vector para darle los puntos de cada caja que posee cada
-  // jugador.
-  void scoreUpdater();
-  void increaseScore(enum OwnerType player, int diff);
-  // Puntuacion individual (puede ser opcional dependiendo de quien la ocupe).
+  void increaseScore(enum OwnerType player,
+                     int diff); 
   int getScoreP1();
   int getScoreP2();
   // Cantidad de filas y columnas.
@@ -28,7 +25,7 @@ public:
   // xPos y yPos son indices en el tablero.
   Cell *getCell(int xPos, int yPos);
   // jugadas disponibles.
-  vector<class Movement> getAvailableMoves();
+  vector<Movement> getAvailableMoves();
 };
 
 #endif

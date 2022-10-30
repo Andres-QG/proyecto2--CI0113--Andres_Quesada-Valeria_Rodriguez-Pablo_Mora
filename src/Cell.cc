@@ -6,9 +6,9 @@ Cell::Cell()
 
 Cell::~Cell() {}
 
-enum OwnerType Cell::getBoxOwner() { return boxOwner; }
+OwnerType Cell::getBoxOwner() { return boxOwner; }
 
-enum OwnerType* Cell::getLine(int direction){
+OwnerType* Cell::getLine(int direction){
   switch (direction)
   {
   case 0:
@@ -29,7 +29,7 @@ enum OwnerType* Cell::getLine(int direction){
   }
 }
 
-bool Cell::boxChecker(enum OwnerType owner) {
+bool Cell::boxChecker(OwnerType owner) {
   if (east != NO_OWNER && north != NO_OWNER && south != NO_OWNER &&
       west != NO_OWNER && boxOwner == NO_OWNER) {
     boxOwner = owner;

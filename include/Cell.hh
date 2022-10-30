@@ -7,6 +7,7 @@
 
 using namespace std;
 
+/*TODO: Revisar necesidad de no valid.*/
 enum OwnerType { NO_OWNER, PLAYER1, PLAYER2, NO_VALID };
 
 class Cell {
@@ -21,7 +22,7 @@ public:
 
   enum OwnerType getBoxOwner();
   // 0-w, 1-s, 2-n, 3-s.
-  enum OwnerType* getLine(int direction);
+  enum OwnerType *getLine(int direction);
   // true si logra hacer una caja y darle un dueno, false si ya tenia dueno o no
   // hay caja aun.
   bool boxChecker(enum OwnerType owner);

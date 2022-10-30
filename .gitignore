@@ -31,6 +31,9 @@
 *.out
 *.app
 
+# VS Code files
+.vscode/*
+*.json
 
 # CMake files
 #source: https://github.com/github/gitignore/blob/main/CMake.gitignore
