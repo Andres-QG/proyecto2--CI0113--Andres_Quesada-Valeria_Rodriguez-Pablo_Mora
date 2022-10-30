@@ -94,3 +94,52 @@ Movement *PlayerMid::findBestMove(Board &board,
   }
   return nullptr;
 }
+
+Movement PlayerMiniMax::rehearsedPlay(Board &board) {
+  bool isMaxPlayer; 
+  if (id == PLAYER1){
+    isMaxPlayer = true; 
+  } else {
+    isMaxPlayer = false;
+  }
+
+  int depth = 0;
+  int nNodes = 1;
+  int size = board.getAvailableMoves().size();
+  while (nNodes < 50000 && size > 0)
+  {
+      nNodes *= size;
+      size -= 1;
+      depth += 1;
+  }
+  MiniMax minimax = {board, isMaxPlayer, depth};
+  minimax.performMiniMax(true);
+  return minimax.getBestMove();
+}
+
+Movement PlayerAlfaBeta::rehearsedPlay(Board& board) {
+    bool isMaxPlayer;
+    if (id == PLAYER1) {
+        isMaxPlayer = true;
+    }
+    else {
+        isMaxPlayer = false;
+    }
+
+    int depth = 0;
+    int nNodes = 1;
+    int size = board.getAvailableMoves().size();
+    while (nNodes < 200000 && size > 0)
+    {
+        nNodes *= size;
+        size -= 1;
+        depth += 1;
+    }
+    MiniMax minimax = { board, isMaxPlayer, depth };
+    minimax.performAlfaBeta(true, -15000, 15000);
+    return minimax.getBestMove();
+}
+
+Movement PlayerHuman::rehearsedPlay(Board &board) {
+  return Movement{-1, -1, EMPTY};
+}

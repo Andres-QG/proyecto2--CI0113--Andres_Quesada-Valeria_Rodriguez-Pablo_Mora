@@ -22,9 +22,9 @@ MainFrame :: MainFrame (const wxString& title): wxFrame(nullptr, wxID_ANY, title
     wxStaticText* staticText = new wxStaticText(panel, wxID_ANY, "Points", wxPoint(100,100));
 
     Board board = {4,6};
-
-    wxPanel* game_panel = new GameBoardPanel((wxFrame*)this, board);
-
+    //Board board = {11,11};
+    wxPanel* game_panel = new GameBoardPanel((wxFrame*)this, board, HUMAN, MEDIUM);
+    //game_panel->SetDoubleBuffered(true);
     game_panel->SetBackgroundColour(*wxWHITE);
     CreateStatusBar();
 
@@ -32,5 +32,6 @@ MainFrame :: MainFrame (const wxString& title): wxFrame(nullptr, wxID_ANY, title
     sizer->Add(panel, 1 , wxEXPAND | wxLEFT| wxTOP | wxRIGHT,10);
     sizer->Add(game_panel,2, wxEXPAND | wxALL,10);
     this->SetSizerAndFit(sizer);
+    
     
 }

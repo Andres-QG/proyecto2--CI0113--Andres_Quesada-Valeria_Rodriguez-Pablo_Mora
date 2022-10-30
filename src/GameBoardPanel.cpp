@@ -1,13 +1,16 @@
 #include <App.hh>
 #include <MainFrame.hh>
 #include <GameBoardPanel.hh>
-#include <Board.hh>
 #include <stdio.h>
-#include <MiniMax.hh>
+
 
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+
+wxBEGIN_EVENT_TABLE(GameBoardPanel, wxPanel)
+    EVT_TIMER(1500, GameBoardPanel::OnTimer)
+wxEND_EVENT_TABLE()
 
 GameBoardPanel::GameBoardPanel(wxFrame* parent) :
 wxPanel(parent), myBoard(Board(3,3))
@@ -16,12 +19,19 @@ wxPanel(parent), myBoard(Board(3,3))
   Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick, this);
 }
 
-GameBoardPanel::GameBoardPanel(wxFrame* parent, Board board) :
-    wxPanel(parent), myBoard(board), scorePlayer1(0), scorePlayer2(0)
+GameBoardPanel::GameBoardPanel(wxFrame* parent, Board board, PlayerType player1, PlayerType player2) :
+    wxPanel(parent), myBoard(board), player1(player1), player2(player2), scorePlayer1(0), scorePlayer2(0),
+    m_timer(this, 1500), totalMovement(board.getAvailableMoves().size())
 {
+    PlayerFactory factory;
+    py1 = factory.build(player1, PLAYER1);
+    py2 = factory.build(player2, PLAYER2);
     Bind(wxEVT_PAINT, &GameBoardPanel::paintEvent, this);
-    Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick2, this);
+    Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick4, this);
     Bind(wxEVT_MOTION, &GameBoardPanel::OnMouseMove, this);
+    m_timer.Start(25);
+
+    
 }
 
 
@@ -138,6 +148,15 @@ void GameBoardPanel::renderGame(wxDC& dc){
     }
 }
 
+void GameBoardPanel::OnTimer(wxTimerEvent& event){
+    //Refresh();
+    playGame();
+    wxString message = wxString::Format("PLAYER1:%d, PLAYER2:%d", scorePlayer1, scorePlayer2);
+ 	  wxLogStatus(message);
+    //Refresh();
+}
+
+
 void GameBoardPanel::drawTemporalLine(wxDC& dc, int rowIndex, int columIndex, Directions direction, double cellWidth, double cellHeight){
     double xMargin = 27; 
     double yMargin = 27; 
@@ -215,37 +234,6 @@ Directions GameBoardPanel::getDirection(double xPosition, double yPosition, int 
   return EMPTY;
 }
 
-/*
-void GameBoardPanel::OnMouseLeftClick2(wxMouseEvent& evt) {
-    wxPoint position = evt.GetPosition();
-    Movement move = getTemporalMovement(position.x, position.y);
-    if (move.isValid(&myBoard)){
-      move.playAndAssignOwner(myBoard, PLAYER2);
-      myBoard.scoreUpdater();
-      int auxiliarScorePlayer2 = myBoard.getScoreP2();
-
-      if(auxiliarScorePlayer2 > scorePlayer2){
-        scorePlayer2 = auxiliarScorePlayer2;
-      } else {
-        int auxiliarScorePlayer1; 
-        do
-        {
-          auxiliarScorePlayer1 = scorePlayer1;
-          MiniMax minimax = {myBoard, true, 4};
-          minimax.performAlfaBeta(true, -1500, 1500);
-          minimax.getBestMove().playAndAssignOwner(myBoard, PLAYER1);
-          minimax.~MiniMax();
-          myBoard.scoreUpdater();
-          scorePlayer1 = myBoard.getScoreP1();
-        } while (scorePlayer1 > auxiliarScorePlayer1);       
-      }
-    }
-  wxString message = wxString::Format("PLAYER1:%d, PLAYER2:%d", scorePlayer1, scorePlayer2);
- 	wxLogStatus(message);
-    Refresh();
-}
-
-*/
 
 void GameBoardPanel::OnMouseLeftClick2(wxMouseEvent& evt) {
     wxPoint position = evt.GetPosition();
@@ -289,6 +277,13 @@ void GameBoardPanel::OnMouseLeftClick3(wxMouseEvent& evt){
         Unbind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick, this);
       }
   }
+}
+
+void GameBoardPanel::OnMouseLeftClick4(wxMouseEvent& evt) {
+    wxPoint position = evt.GetPosition();
+    Movement movement = getTemporalMovement(position.x, position.y);
+    humanMovement = movement;
+    Refresh();
 }
 
 
@@ -352,6 +347,53 @@ void GameBoardPanel::OnMouseMove(wxMouseEvent& evt) {
 
 }
 
+bool GameBoardPanel::doHumanMove(OwnerType owner) {
+
+  if (humanMovement.isValid(&myBoard)){
+      humanMovement.playAndAssignOwner(myBoard, owner);
+      humanMovement = Movement{-1, -1, EMPTY};
+      return true;
+    } 
+    return false;
+}
+
+
+void GameBoardPanel::playGame(){
+  if(gameTurn == 1) {
+    if (player1 != HUMAN){
+      py1 -> rehearsedPlay (myBoard).playAndAssignOwner(myBoard, PLAYER1);
+      gameTurn *= -1;
+    } else {
+      if(doHumanMove(PLAYER1)){
+        gameTurn *= -1;
+      }
+    }
+      myBoard.scoreUpdater(); // delete 
+      int auxiliarScorePlayer1 = myBoard.getScoreP1();
+
+      if(auxiliarScorePlayer1 > scorePlayer1){
+        scorePlayer1 = auxiliarScorePlayer1;
+        gameTurn *= -1;
+      } 
+  } else {
+    if (player2 != HUMAN){
+      py2 -> rehearsedPlay (myBoard).playAndAssignOwner(myBoard, PLAYER2);
+      gameTurn *= -1;
+    } else {
+      if(doHumanMove(PLAYER2)){
+        gameTurn *= -1;
+      }
+    }
+    myBoard.scoreUpdater(); // delete 
+    int auxiliarScorePlayer2 = myBoard.getScoreP2();
+
+    if(auxiliarScorePlayer2 > scorePlayer2){
+      scorePlayer2 = auxiliarScorePlayer2;
+      gameTurn *= -1;
+    } 
+  }
+  
+}
 
 bool GameBoardPanel::ZoneClicked(wxEvent& evt) {
   return true;

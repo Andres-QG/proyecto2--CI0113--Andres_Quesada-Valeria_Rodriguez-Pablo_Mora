@@ -4,6 +4,8 @@
 #include "Board.hh"
 #include "Movement.hh"
 #include "Cell.hh"
+
+
 using namespace std;
 
 class MiniMax{
@@ -22,8 +24,6 @@ class MiniMax{
         //Primera llamada debe ser minimax.performAlfaBeta(true, -15000, 15000);
         short performAlfaBeta(bool root, short alfa, short beta);
         Movement getBestMove();
-
-        ~MiniMax(); 
 }; 
 
 #endif
