@@ -18,6 +18,7 @@ public:
   // Recorre el vector para darle los puntos de cada caja que posee cada
   // jugador.
   void scoreUpdater();
+  void increaseScore(enum OwnerType player, int diff);
   // Puntuacion individual (puede ser opcional dependiendo de quien la ocupe).
   int getScoreP1();
   int getScoreP2();

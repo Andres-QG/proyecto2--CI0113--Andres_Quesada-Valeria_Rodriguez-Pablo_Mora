@@ -21,6 +21,19 @@ int Board::getScoreP1() { return player1Score; }
 
 int Board::getScoreP2() { return player2Score; }
 
+void Board::increaseScore(enum OwnerType player, int diff) {
+    switch (player) {
+    case OwnerType::PLAYER1:
+        player1Score += diff;
+        break;
+    case OwnerType::PLAYER2:
+        player2Score += diff;
+        break;
+    default:
+        break;
+    }
+}
+
 void Board::scoreUpdater() {
   int count1 = 0, count2 = 0;
   // Cuenta las cajas de cada uno.
@@ -51,31 +64,31 @@ Cell *Board::getCell(int xPos, int yPos) {
 }
 
 vector<class Movement> Board::getAvailableMoves() {
-  vector<Movement> moves;
-  Movement *temp;
-  // Verifica todos los lados de cada celda.
-  // No queremos las dos formas de hacer un mismo move.
-  for (int i = 0; i < boxes.size(); i++) {
-    for (int j = 0; j < boxes[i].size(); j++) {
-      // E y S se colocan sin revisar pues no se tienen en un anterior.
-      // W y N si se revisan pues se puede haber colocado anteriormente.
-      if (boxes[i][j].east == NO_OWNER) {
-        temp = new Movement(i, j, EAST);
-        moves.push_back(*temp);
-      }
-      if (j == 0 && boxes[i][j].west == NO_OWNER) {
-        temp = new Movement(i, j, WEST);
-        moves.push_back(*temp);
-      }
-      if (i == 0 && boxes[i][j].north == NO_OWNER) {
-        temp = new Movement(i, j, NORTH);
-        moves.push_back(*temp);
-      }
-      if (boxes[i][j].south == NO_OWNER) {
-        temp = new Movement(i, j, SOUTH);
-        moves.push_back(*temp);
-      }
+    vector<Movement> moves;
+    //Movement *temp;
+    // Verifica todos los lados de cada celda.
+    // No queremos las dos formas de hacer un mismo move.
+    for (int i = 0; i < boxes.size(); i++) {
+        for (int j = 0; j < boxes[i].size(); j++) {
+            // E y S se colocan sin revisar pues no se tienen en un anterior.
+            // W y N si se revisan pues se puede haber colocado anteriormente.
+            if (boxes[i][j].east == NO_OWNER) {
+                //temp = new Movement(i, j, EAST);
+                moves.push_back({ i, j, EAST });
+            }
+            if (j == 0 && boxes[i][j].west == NO_OWNER) {
+                //temp = new Movement(i, j, WEST);
+                moves.push_back({ i, j, WEST });
+            }
+            if (i == 0 && boxes[i][j].north == NO_OWNER) {
+                //temp = new Movement(i, j, NORTH);
+                moves.push_back({ i, j, NORTH });
+            }
+            if (boxes[i][j].south == NO_OWNER) {
+                //temp = new Movement(i, j, SOUTH);
+                moves.push_back({ i, j, SOUTH });
+            }
+        }
     }
-  }
-  return moves;
+    return moves;
 }

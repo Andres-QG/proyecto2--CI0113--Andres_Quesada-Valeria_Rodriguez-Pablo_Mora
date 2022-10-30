@@ -28,9 +28,6 @@ class GameBoardPanel : public wxPanel
     wxTimer m_timer;
     wxDECLARE_EVENT_TABLE();
     void OnMouseLeftClick(wxMouseEvent& evt);
-    void OnMouseLeftClick2(wxMouseEvent& evt);
-    void OnMouseLeftClick3(wxMouseEvent& evt);
-    void OnMouseLeftClick4(wxMouseEvent& evt);
     void OnMouseMove(wxMouseEvent& evt);
     void drawTemporalLine(wxDC& dc, int rowIndex, int columIndex, Directions direction, double cellWidth, double cellHeight); 
     bool ZoneClicked(wxEvent& evt);

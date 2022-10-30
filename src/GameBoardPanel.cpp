@@ -27,11 +27,9 @@ GameBoardPanel::GameBoardPanel(wxFrame* parent, Board board, PlayerType player1,
     py1 = factory.build(player1, PLAYER1);
     py2 = factory.build(player2, PLAYER2);
     Bind(wxEVT_PAINT, &GameBoardPanel::paintEvent, this);
-    Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick4, this);
+    Bind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick, this);
     Bind(wxEVT_MOTION, &GameBoardPanel::OnMouseMove, this);
-    m_timer.Start(25);
-
-    
+    m_timer.Start(20);  
 }
 
 
@@ -46,34 +44,6 @@ void GameBoardPanel::paintNow() {
   renderGame(dc);
   //render(dc);
 }
-
-void GameBoardPanel::render(wxDC& dc) {
-  myBoard.getScoreP1();
-  wxSize size = this->GetSize();
-  dc.SetPen(*wxBLACK_PEN);
-  int nrows = 10;
-  int ncolumns = 10;
-  double widthSize = size.x / (ncolumns+1);
-	double heightSize = size.y / (nrows+1);
-  double rowStartPosition = 27.0;
-  for (int i = 0; i < ncolumns + 1; i++) {
-    double columStartPosition = 27.0;
-    for (int j = 0; j < nrows + 1; j++) {
-      dc.SetBrush(*wxBLACK_BRUSH);
-      dc.DrawCircle(rowStartPosition, columStartPosition ,5);
-      dc.SetBrush(*wxWHITE_BRUSH);
-      if (!(j == nrows)) {
-        dc.DrawRectangle(rowStartPosition-5, columStartPosition + 5, 10, (rowStartPosition+widthSize+2)-rowStartPosition);
-      }
-      if (!(i==ncolumns)) {
-        dc.DrawRectangle(rowStartPosition+5, columStartPosition - 5, (columStartPosition+heightSize-2)-columStartPosition, 10);
-      }
-      columStartPosition += heightSize;
-    }
-    rowStartPosition += widthSize;
-  }
-}
-
 
 void GameBoardPanel::renderGame(wxDC& dc){
     wxSize size = this->GetSize();
@@ -153,7 +123,42 @@ void GameBoardPanel::OnTimer(wxTimerEvent& event){
     playGame();
     wxString message = wxString::Format("PLAYER1:%d, PLAYER2:%d", scorePlayer1, scorePlayer2);
  	  wxLogStatus(message);
+    Refresh();
+}
+
+
+void GameBoardPanel::OnMouseLeftClick(wxMouseEvent& evt) {
+    wxPoint position = evt.GetPosition();
+    Movement movement = getTemporalMovement(position.x, position.y);
+    humanMovement = movement;
+    Refresh();
+}
+
+
+void GameBoardPanel::OnMouseMove(wxMouseEvent& evt) {
+    wxClientDC dc(this);
+    wxPoint position = evt.GetPosition();
     //Refresh();
+    Movement move = getTemporalMovement(position.x, position.y);
+    if (move.isValid(&myBoard)) {
+        double xMargin = 27;
+        double yMargin = 27;
+        wxSize size = this->GetSize();
+
+        int nrows = myBoard.getBoardRowSize(); //TODO
+        int ncolumns = myBoard.getBoardColSize(); //TODO
+
+        double boardWidth = size.x - 2 * xMargin;
+        double boardHeight = size.y - 2 * yMargin;
+
+        double cellWidth = boardWidth / ncolumns;
+        double cellHeight = boardHeight / nrows;
+
+        drawTemporalLine(dc, move.getXPos(), move.getYPos(), move.getLineDirection(), cellWidth, cellHeight);
+    }
+
+    renderGame(dc);
+
 }
 
 
@@ -234,119 +239,6 @@ Directions GameBoardPanel::getDirection(double xPosition, double yPosition, int 
   return EMPTY;
 }
 
-
-void GameBoardPanel::OnMouseLeftClick2(wxMouseEvent& evt) {
-    wxPoint position = evt.GetPosition();
-    Movement move = getTemporalMovement(position.x, position.y);
-    if (move.isValid(&myBoard)){
-      move.playAndAssignOwner(myBoard, PLAYER1);
-      myBoard.scoreUpdater();
-      int auxiliarScorePlayer1 = myBoard.getScoreP1();
-
-      if(auxiliarScorePlayer1 > scorePlayer1){
-        scorePlayer1 = auxiliarScorePlayer1;
-      } else {
-        int auxiliarScorePlayer2; 
-        do
-        {
-          auxiliarScorePlayer2 = scorePlayer2;
-          MiniMax minimax = {myBoard, false, 4};
-          minimax.performAlfaBeta(true, -15000, 15000);
-          minimax.getBestMove().playAndAssignOwner(myBoard, PLAYER2);
-          minimax.~MiniMax();
-          myBoard.scoreUpdater();
-          scorePlayer2 = myBoard.getScoreP2();
-        } while (scorePlayer2 > auxiliarScorePlayer2);       
-      }
-    }
-  wxString message = wxString::Format("PLAYER1:%d, PLAYER2:%d", scorePlayer1, scorePlayer2);
- 	wxLogStatus(message);
-  Refresh();
-}
-
-void GameBoardPanel::OnMouseLeftClick3(wxMouseEvent& evt){
-  wxPoint position = evt.GetPosition();
-  Movement move = getTemporalMovement(position.x, position.y);
-  if (move.isValid(&myBoard)){
-      move.playAndAssignOwner(myBoard, PLAYER1);
-      myBoard.scoreUpdater();
-      int newScore = myBoard.getScoreP1();
-      if(newScore > scorePlayer1){
-        scorePlayer1 = newScore;  
-      } else {
-        Unbind(wxEVT_LEFT_DOWN, &GameBoardPanel::OnMouseLeftClick, this);
-      }
-  }
-}
-
-void GameBoardPanel::OnMouseLeftClick4(wxMouseEvent& evt) {
-    wxPoint position = evt.GetPosition();
-    Movement movement = getTemporalMovement(position.x, position.y);
-    humanMovement = movement;
-    Refresh();
-}
-
-
-void GameBoardPanel::OnMouseLeftClick(wxMouseEvent& evt) {
-  // Para obtener la posici�n del mouse. 
-	wxPoint position = evt.GetPosition();
-	//wxString message = wxString::Format("Left mouse click (x=%d, y=%d)", position.x, position.y);
-  Movement move = getTemporalMovement(position.x, position.y);
-  
-  if (move.isValid(&myBoard)){
-    int newScore;
-    if (gameTurn == 1) {
-      move.playAndAssignOwner(myBoard, PLAYER1);
-      myBoard.scoreUpdater();
-      newScore = myBoard.getScoreP1();
-      if(newScore > scorePlayer1){
-        scorePlayer1 = newScore;
-        gameTurn *= -1;
-      }
-    } else {
-      move.playAndAssignOwner(myBoard, PLAYER2);
-      myBoard.scoreUpdater();
-      newScore = myBoard.getScoreP2();
-      if(newScore > scorePlayer2){
-        scorePlayer2 = newScore;
-        gameTurn *= -1;
-      }
-    }
-    gameTurn *= -1;
-  }
-
-  Refresh();
-
-  wxString message = wxString::Format("Left mouse click (row=%d, column=%d, direction=%d)", move.getXPos(), move.getYPos(), move.getLineDirection());
- 	wxLogStatus(message);
-}
-
-void GameBoardPanel::OnMouseMove(wxMouseEvent& evt) {
-    wxClientDC dc(this);
-    wxPoint position = evt.GetPosition();
-    //Refresh();
-    Movement move = getTemporalMovement(position.x, position.y);
-    if (move.isValid(&myBoard)){
-      double xMargin = 27;
-      double yMargin = 27;
-      wxSize size = this->GetSize();
-
-      int nrows = myBoard.getBoardRowSize(); //TODO
-      int ncolumns = myBoard.getBoardColSize(); //TODO
-
-      double boardWidth = size.x - 2*xMargin; 
-      double boardHeight = size.y - 2*yMargin;
-
-      double cellWidth = boardWidth / ncolumns; 
-      double cellHeight = boardHeight / nrows;
-
-      drawTemporalLine(dc, move.getXPos(), move.getYPos(), move.getLineDirection(), cellWidth, cellHeight);
-  }
-
-  renderGame(dc);
-
-}
-
 bool GameBoardPanel::doHumanMove(OwnerType owner) {
 
   if (humanMovement.isValid(&myBoard)){
@@ -393,8 +285,4 @@ void GameBoardPanel::playGame(){
     } 
   }
   
-}
-
-bool GameBoardPanel::ZoneClicked(wxEvent& evt) {
-  return true;
 }

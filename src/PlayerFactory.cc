@@ -9,7 +9,7 @@ Player* PlayerFactory::build(PlayerType playerType, OwnerType owner){
         return new PlayerMid(owner);
     case MINIMAX:
         return new PlayerMiniMax(owner);
-    case ALFABETA_PRUNNING:
+    case ALFABETA_PRUNING:
         return new PlayerAlfaBeta(owner);
     case HUMAN:
         return new PlayerHuman(owner);

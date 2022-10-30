@@ -3,7 +3,7 @@
 
 #include "Player.hh"
 
-enum PlayerType { EASY, MEDIUM, MINIMAX, ALFABETA_PRUNNING, HUMAN };
+enum PlayerType { EASY, MEDIUM, MINIMAX, ALFABETA_PRUNING, HUMAN };
 
 class PlayerFactory {
   public: 
