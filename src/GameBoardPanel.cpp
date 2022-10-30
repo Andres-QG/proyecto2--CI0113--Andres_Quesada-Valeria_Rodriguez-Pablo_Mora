@@ -237,7 +237,7 @@ Directions GameBoardPanel::getDirection(double xPosition, double yPosition, int 
 
 bool GameBoardPanel::doHumanMove(OwnerType owner) {
 
-  if (humanMovement.isValid(&myBoard)){
+  if (humanMovement.getLineDirection() != EMPTY) {
       humanMovement.playAndAssignOwner(myBoard, owner);
       humanMovement = Movement{-1, -1, EMPTY};
       return true;

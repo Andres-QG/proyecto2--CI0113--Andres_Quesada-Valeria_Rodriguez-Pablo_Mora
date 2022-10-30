@@ -94,7 +94,7 @@ Movement PlayerMid::findBestMove(Board &board, vector<Movement> possibleMoves) {
       break;
     }
   }
-  return nullptr;
+  return Movement(false);
 }
 
 Movement PlayerMiniMax::rehearsedPlay(Board &board) {
