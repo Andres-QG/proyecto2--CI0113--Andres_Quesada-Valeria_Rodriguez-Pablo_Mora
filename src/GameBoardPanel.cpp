@@ -15,7 +15,7 @@ wxEND_EVENT_TABLE()
 
 GameBoardPanel::GameBoardPanel(wxFrame* parent, Board& board, PlayerType player1, PlayerType player2) :
     wxPanel(parent), myBoard(board), player1(player1), player2(player2), scorePlayer1(0), scorePlayer2(0),
-    m_timer(this, 1500), movements(board.getAvailableMoves().size())
+    m_timer(this, 1500), movements(board.getAvailableMoves().size()), displayedDialog(false)
 {
     //movements = 10;
     PlayerFactory factory;
@@ -62,7 +62,20 @@ void GameBoardPanel::renderGame(wxDC& dc){
       double rowStartPosition = yMargin;
       for (int j = 0; j < nrows + 1; j++) {       
         Cell* celda = myBoard.getCell(j, i);
+            // Dibujar celdas rellenas 
             if (i < ncolumns && j < nrows) {
+                if (celda->getBoxOwner() == PLAYER1) {
+                    dc.SetBrush(*wxBLUE_BRUSH);
+                    dc.DrawRectangle((columnStartPosition - 2 ), (rowStartPosition - 2), (cellWidth + 2), (cellHeight + 2));
+
+                }
+                else {
+                    if (celda->getBoxOwner() == PLAYER2) {
+                        dc.SetBrush(*wxRED_BRUSH);
+                        dc.DrawRectangle((columnStartPosition - 2), (rowStartPosition - 2), (cellWidth + 2), (cellHeight + 2));
+                    }
+                }
+
                // Dibujar línea de la derecha de las cajas
               if (celda->east == PLAYER1){
                 dc.SetBrush(*wxBLUE_BRUSH);
@@ -117,6 +130,14 @@ void GameBoardPanel::renderGame(wxDC& dc){
 
 void GameBoardPanel::OnTimer(wxTimerEvent& event){
     playGame();
+
+    if (gameTurn == 1) {
+        wxLogStatus("Next turn : Player 1");
+    }
+    else {
+        wxLogStatus("Next turn : Player 2");
+    }
+
     Refresh();
 }
 
@@ -237,8 +258,7 @@ void GameBoardPanel::playGame(){
                 if (doHumanMove(PLAYER1)) {
                     gameTurn *= -1;
                     movements -= 1;
-                }
-                
+                }                
             }
             int auxiliarScorePlayer1 = myBoard.getScoreP1();
 
@@ -266,6 +286,22 @@ void GameBoardPanel::playGame(){
                 gameTurn *= -1;
             }
         }
+    }
+    else {
+        if (displayedDialog == false)
+            if (myBoard.getScoreP1() > myBoard.getScoreP2()) {
+                wxLogMessage("Player 1 win the game.");
+            }
+            else {
+                if (myBoard.getScoreP1() < myBoard.getScoreP2()) {
+                    wxLogMessage("Player 2 win the game.");
+                }
+                else {
+                    wxLogMessage("The players tied the game.");
+                }
+
+            }
+            displayedDialog = true;
     }
 }
 

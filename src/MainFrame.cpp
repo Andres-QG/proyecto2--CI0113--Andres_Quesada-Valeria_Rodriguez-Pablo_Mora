@@ -20,7 +20,7 @@ MainFrame :: MainFrame (const wxString& title): wxFrame(nullptr, wxID_ANY, title
     wxSize size = panel->GetSize();
 
     board = Board{ 4,6 };
-    wxPanel* game_panel = new GameBoardPanel((wxFrame*)this, board, HUMAN, ALFABETA_PRUNING);
+    wxPanel* game_panel = new GameBoardPanel((wxFrame*)this, board, HUMAN, HUMAN);
     game_panel->SetDoubleBuffered(true);
     game_panel->SetBackgroundColour(*wxWHITE);
 
@@ -32,6 +32,8 @@ MainFrame :: MainFrame (const wxString& title): wxFrame(nullptr, wxID_ANY, title
 
     auto button = new wxButton(panel, wxID_ANY, "Nueva Partida", wxPoint(3, 20), wxSize(100, 40));
     
+    CreateStatusBar();
+
     wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add(panel, 1 , wxEXPAND | wxLEFT| wxTOP | wxRIGHT, 4);
     sizer->Add(game_panel, 2, wxEXPAND | wxLEFT | wxTOP | wxRIGHT, 4);
