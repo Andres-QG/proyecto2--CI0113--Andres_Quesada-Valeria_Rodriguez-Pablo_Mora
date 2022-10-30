@@ -7,12 +7,13 @@
 class MainFrame : public wxFrame
 {
 public:
-  MainFrame(const wxString& title);
+  MainFrame(const wxString& title, int nRows, int nColumns, PlayerType player1, PlayerType player2);
   void OnTimerMF(wxTimerEvent& event);
 private:
 	wxTimer m_timer;
 	wxTimer* timer;
 	wxStaticText* staticText;
+	void OnButtonClicked(wxCommandEvent& evt);
 	Board board;
 };
 
