@@ -4,9 +4,6 @@
 NewGameDialog::NewGameDialog(wxWindow* parent, const wxString& title):
 wxDialog(parent,-1, title, wxPoint(500,300), wxSize(500,400)) 
 {
-  wxSize size = this->GetSize();
-  int height = size.y;
-  int width = size.x;
   wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer* playerSizer = new wxBoxSizer(wxHORIZONTAL);
   wxBoxSizer* columnsRows = new wxBoxSizer(wxVERTICAL);
