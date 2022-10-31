@@ -38,7 +38,6 @@ class GameBoardPanel : public wxPanel
     Movement temporalMovement = Movement{ -1, -1, EMPTY };
     Movement humanMovement = Movement{-1, -1, EMPTY};
     bool displayedDialog;
-    int movements;
     short gameTurn = 1; 
 };
 
