@@ -111,7 +111,7 @@ Movement PlayerMiniMax::rehearsedPlay(Board &board) {
   int depth = 0;
   int nNodes = 1;
   int size = board.getAvailableMoves().size();
-  while (nNodes < 5000 && size > 0)
+  while (nNodes < 2000 && size > 0)
   {
       nNodes *= size;
       size -= 1;
@@ -137,7 +137,7 @@ Movement PlayerAlfaBeta::rehearsedPlay(Board& board) {
     int depth = 0;
     int nNodes = 1;
     int size = board.getAvailableMoves().size();
-    while (nNodes < 200000 && size > 0)
+    while (nNodes < 100000 && size > 0)
     {
         nNodes *= size;
         size -= 1;
