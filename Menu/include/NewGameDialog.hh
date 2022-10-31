@@ -4,5 +4,5 @@
 class NewGameDialog : public wxDialog {
 public:
   NewGameDialog(wxWindow* parent, const wxString& title);
-//virtual ~NewGameDialog();
+  void OnClick(wxCommandEvent & event);
 };

@@ -4,6 +4,7 @@
 NewGameDialog::NewGameDialog(wxWindow* parent, const wxString& title):
 wxDialog(parent,-1, title, wxPoint(500,300), wxSize(500,400)) 
 {
+  //Sizers
   wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer* playerSizer = new wxBoxSizer(wxHORIZONTAL);
   wxBoxSizer* columnsRows = new wxBoxSizer(wxVERTICAL);
@@ -47,7 +48,6 @@ wxDialog(parent,-1, title, wxPoint(500,300), wxSize(500,400))
   wxStaticText *colorA = new wxStaticText(this,wxID_ANY,"Choose a color to identify your turn Player A: ");
   wxStaticText *colorB = new wxStaticText(this,wxID_ANY,"Choose a color to identify your turn Player B: ");
 
-
   wxArrayString choicesColorA;
   choicesColorA.Add("Red");
   choicesColorA.Add("Green");
@@ -67,6 +67,13 @@ wxDialog(parent,-1, title, wxPoint(500,300), wxSize(500,400))
   colors->Add(colorB);
   colors->Add(choiceColorB);
 
+  //Button
+  wxSize size = this->GetSize();
+  int height = size.y;
+  int width = size.x;
+  wxButton *buttonGame = new wxButton(this,wxID_ANY, wxT("Apply"), wxPoint((width/3)*2, (height/5)*3));
+  Connect(wxID_ANY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(NewGameDialog::OnClick));
+
   //Puts everything together
   wxSizer* buttonSizer = CreateButtonSizer(wxOK);
   mainSizer->Add(playerSizer,0, wxLEFT | wxBOTTOM,5);
@@ -76,4 +83,9 @@ wxDialog(parent,-1, title, wxPoint(500,300), wxSize(500,400))
   SetSizer(mainSizer);
   SetMinSize(wxSize(400,200));
   Fit();
+}
+
+void NewGameDialog::OnClick(wxCommandEvent & event) {
+  this->EndModal(wxID_APPLY);
+
 }
