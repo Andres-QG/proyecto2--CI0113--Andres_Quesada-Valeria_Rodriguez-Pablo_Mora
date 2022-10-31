@@ -15,7 +15,7 @@ wxEND_EVENT_TABLE()
 
 GameBoardPanel::GameBoardPanel(wxFrame* parent, Board& board, PlayerType player1, PlayerType player2) :
     wxPanel(parent), myBoard(board), player1(player1), player2(player2), scorePlayer1(0), scorePlayer2(0),
-    m_timer(this, 1500), movements(board.getAvailableMoves().size()), displayedDialog(false)
+    m_timer(this, 1500), displayedDialog(false)
 {
     //movements = 10;
     PlayerFactory factory;
@@ -247,17 +247,15 @@ bool GameBoardPanel::doHumanMove(OwnerType owner) {
 
 
 void GameBoardPanel::playGame(){
-    if (movements > 0) {
+    if (myBoard.getAvailableMoves().size() > 0) {
         if (gameTurn == 1) {
             if (player1 != HUMAN) {
                 py1->rehearsedPlay(myBoard).playAndAssignOwner(myBoard, PLAYER1);
                 gameTurn *= -1;
-                movements -= 1;
             }
             else {
                 if (doHumanMove(PLAYER1)) {
                     gameTurn *= -1;
-                    movements -= 1;
                 }                
             }
             int auxiliarScorePlayer1 = myBoard.getScoreP1();
@@ -271,12 +269,10 @@ void GameBoardPanel::playGame(){
             if (player2 != HUMAN) {
                 py2->rehearsedPlay(myBoard).playAndAssignOwner(myBoard, PLAYER2);
                 gameTurn *= -1;
-                movements -= 1;
             }
             else {
                 if (doHumanMove(PLAYER2)) {
                     gameTurn *= -1;
-                    movements -= 1;
                 }
             }
             int auxiliarScorePlayer2 = myBoard.getScoreP2();
@@ -304,4 +300,3 @@ void GameBoardPanel::playGame(){
             displayedDialog = true;
     }
 }
-

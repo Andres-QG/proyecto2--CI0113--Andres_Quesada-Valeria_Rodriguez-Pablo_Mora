@@ -1,5 +1,6 @@
 #include <App.hh>
 #include <MainFrame.hh>
+#include <MenuFrame.hh>
 #include <GameBoardPanel.hh>
 
 #ifndef WX_PRECOMP
@@ -10,13 +11,15 @@ wxIMPLEMENT_APP(App);
 
 bool App::OnInit() {
     this->Bind(wxEVT_BUTTON, &App::OnRestartButtonClicked, this);
-  //drawPane = new GameBoardPanel((wxFrame*)mainFrame);
-    OnInitFrame(3, 5, HUMAN, ALFABETA_PRUNING);
-
-    
+    MenuFrame* menuFrame = new MenuFrame("Prueba");
+    menuFrame->SetClientSize(600, 400);
+    menuFrame->Center();
+    menuFrame->Show(true);
 
     return true;
 
+  //drawPane = new GameBoardPanel((wxFrame*)mainFrame);
+    //OnInitFrame(3, 5, HUMAN, ALFABETA_PRUNING);
 }
 
 void App::OnInitFrame(int nRows, int nColumns, PlayerType player1, PlayerType player2) {
@@ -26,11 +29,15 @@ void App::OnInitFrame(int nRows, int nColumns, PlayerType player1, PlayerType pl
     mainFrame->Show();    
 }
 
-void App::OnInitDialog() {
-    wxLogMessage("Work in progress...");
+void App::Restart() {
+    this->Bind(wxEVT_BUTTON, &App::OnRestartButtonClicked, this);
+    MenuFrame* menuFrame = new MenuFrame("Prueba");
+    menuFrame->SetClientSize(600, 400);
+    menuFrame->Center();
+    menuFrame->Show(true);
 
 }
 
 void App::OnRestartButtonClicked(wxCommandEvent& evt) {
-    OnInitDialog();
+    Restart();
 }
