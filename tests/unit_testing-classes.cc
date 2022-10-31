@@ -136,7 +136,7 @@ TEST(BoardTest, AvailableMovesTest) {
   }
   EXPECT_EQ(b2.getScoreP2(), 3);
   moves = b2.getAvailableMoves();
-  EXPECT_EQ(moves.size(), 412);
+  EXPECT_EQ(moves.size(), 408);
   EXPECT_FALSE(duplicadeMovesTestMethod(moves));
 }
 
@@ -183,7 +183,7 @@ TEST(MiniMaxTest, FirstTwoMovements) {
   // Matriz 2x2 celdas
   Board board = {3, 3};
   MiniMax miniMax = {board, true, 4};
-  miniMax.performMiniMax(true);
+  miniMax.performMiniMax(PLAYER1, PLAYER2);
   Movement bestMove = miniMax.getBestMove();
   bestMove.playAndAssignOwner(board, PLAYER1);
 
@@ -192,8 +192,8 @@ TEST(MiniMaxTest, FirstTwoMovements) {
               bestMove.getLineDirection() ==
                   EAST); // TODO: puede cambiar con nuevo m�todo getMovements().
 
-  MiniMax secondMiniMax = {board, false, 4};
-  secondMiniMax.performMiniMax(true);
+  MiniMax secondMiniMax = {board,true, 4};
+  secondMiniMax.performMiniMax(PLAYER2, PLAYER1);
   bestMove = secondMiniMax.getBestMove();
 
   // Segundo Movimiento
@@ -209,8 +209,8 @@ TEST(MiniMaxTest, NotCompleteThirdLine) {
   Movement moveS = {0, 0, SOUTH};
   moveS.playAndAssignOwner(board, PLAYER2);
 
-  MiniMax miniMax = {board, false, 5};
-  miniMax.performMiniMax(true);
+  MiniMax miniMax = {board, true, 5};
+  miniMax.performMiniMax(PLAYER2, PLAYER1);
   Movement bestMove = miniMax.getBestMove();
 
   EXPECT_FALSE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 &&
@@ -231,8 +231,8 @@ TEST(MiniMaxTest, CompleteCell) {
   Movement moveE = {0, 0, EAST};
   moveE.playAndAssignOwner(board, PLAYER1);
 
-  MiniMax miniMax = {board, false, 4};
-  miniMax.performMiniMax(true);
+  MiniMax miniMax = {board, true, 4};
+  miniMax.performMiniMax(PLAYER2, PLAYER1);
   Movement bestMove = miniMax.getBestMove();
 
   EXPECT_TRUE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 &&
@@ -256,7 +256,7 @@ TEST(MiniMaxTest, CompleteTwoCell) {
   moveE2.playAndAssignOwner(board, PLAYER2);
 
   MiniMax miniMax = {board, true, 4};
-  miniMax.performMiniMax(true);
+  miniMax.performMiniMax(PLAYER1, PLAYER2);
   Movement bestMove = miniMax.getBestMove();
 
   EXPECT_TRUE(bestMove.getXPos() == 1 && bestMove.getYPos() == 0 &&
@@ -268,7 +268,7 @@ TEST(AlfaBetaPruning, FirstTwoMovements) {
   // Matriz 2x2 celdas
   Board board = {3, 3};
   MiniMax miniMax = {board, true, 4};
-  miniMax.performAlfaBeta(true, -15000, 15000);
+  miniMax.performAlfaBeta(PLAYER1, PLAYER2, -15000, 15000);
   Movement bestMove = miniMax.getBestMove();
   bestMove.playAndAssignOwner(board, PLAYER1);
 
@@ -276,8 +276,8 @@ TEST(AlfaBetaPruning, FirstTwoMovements) {
   EXPECT_TRUE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 &&
               bestMove.getLineDirection() == EAST);
 
-  MiniMax secondMiniMax = {board, false, 4};
-  secondMiniMax.performAlfaBeta(true, -15000, 15000);
+  MiniMax secondMiniMax = {board, true, 4};
+  secondMiniMax.performAlfaBeta(PLAYER2, PLAYER1, -15000, 15000);
   bestMove = secondMiniMax.getBestMove();
 
   // Segundo Movimiento
@@ -293,8 +293,8 @@ TEST(AlfaBetaPruning, NotCompleteThirdLine) {
   Movement moveS = {0, 0, SOUTH};
   moveS.playAndAssignOwner(board, PLAYER2);
 
-  MiniMax miniMax = {board, false, 5};
-  miniMax.performAlfaBeta(true, -15000, 15000);
+  MiniMax miniMax = {board, true, 5};
+  miniMax.performAlfaBeta(PLAYER2, PLAYER1, -15000, 15000);
   Movement bestMove = miniMax.getBestMove();
 
   EXPECT_FALSE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 &&
@@ -315,8 +315,8 @@ TEST(AlfaBetaPruning, CompleteCell) {
   Movement moveE = {0, 0, EAST};
   moveE.playAndAssignOwner(board, PLAYER1);
 
-  MiniMax miniMax = {board, false, 4};
-  miniMax.performAlfaBeta(true, -15000, 15000);
+  MiniMax miniMax = {board, true, 4};
+  miniMax.performAlfaBeta(PLAYER2, PLAYER1, -15000, 15000);
   Movement bestMove = miniMax.getBestMove();
 
   EXPECT_TRUE(bestMove.getXPos() == 0 && bestMove.getYPos() == 0 &&
@@ -339,7 +339,7 @@ TEST(AlfaBetaPruning, CompleteTwoCell) {
   moveE2.playAndAssignOwner(board, PLAYER2);
 
   MiniMax miniMax = {board, true, 4};
-  miniMax.performAlfaBeta(true, -15000, 15000);
+  miniMax.performAlfaBeta(PLAYER1, PLAYER2, -15000, 15000);
   Movement bestMove = miniMax.getBestMove();
 
   EXPECT_TRUE(bestMove.getXPos() == 1 && bestMove.getYPos() == 0 &&
@@ -383,6 +383,7 @@ TEST(PlayerTest, MidPlayerCoherence) {
   EXPECT_NE(m4.playAndAssignOwner(board, PLAYER1), NO_VALID);
 }
 
+/*
 TEST(PlayerTest, MidPlayerBoxCompletion) {
   Board board = {8, 6};
   PlayerMid p1(PLAYER1);
@@ -433,7 +434,4 @@ TEST(PlayerTest, MidPlayerBoxCompletion) {
   }
   EXPECT_EQ(board.getScoreP1(), 6);
 }
-
-// TODO: Cuando este la parte del "controlador" se puede implementar de mejor
-// forma.
-TEST(PlayerTest, EasyvsEasyGame) {}
+*/

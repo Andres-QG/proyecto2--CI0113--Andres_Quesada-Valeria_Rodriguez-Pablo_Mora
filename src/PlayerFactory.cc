@@ -13,6 +13,10 @@ Player* PlayerFactory::build(PlayerType playerType, OwnerType owner){
         return new PlayerAlfaBeta(owner);
     case HUMAN:
         return new PlayerHuman(owner);
+    default:
+        return nullptr;
     }
+
+
 }
 
