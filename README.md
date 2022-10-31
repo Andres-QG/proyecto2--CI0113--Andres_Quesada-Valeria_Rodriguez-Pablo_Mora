@@ -29,12 +29,6 @@ cmake -S . -B build
 cmake --build build
 ```
 
-**After its compiled the program can be called with:**
-
-```bash
-
-```
-
 ***
 
 ## Authors
